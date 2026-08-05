@@ -1,4 +1,5 @@
-const BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const API_ROOT = (process.env.REACT_APP_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
+const BASE = API_ROOT.endsWith("/api") ? API_ROOT : `${API_ROOT}/api`;
 
 const getToken = () => localStorage.getItem("arp_admin_token");
 
