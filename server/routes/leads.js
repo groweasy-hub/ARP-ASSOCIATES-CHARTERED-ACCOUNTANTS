@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect } = require("../middlewares/auth");
+const { protect, hasPermission } = require("../middlewares/auth");
 const {
   createLead,
   getLeads,
@@ -15,11 +15,11 @@ const {
 router.post("/", createLead);
 
 // Admin protected
-router.get("/stats", protect, getStats);
-router.get("/export/csv", protect, exportCSV);
-router.get("/", protect, getLeads);
-router.get("/:id", protect, getLead);
-router.patch("/:id", protect, updateLead);
-router.delete("/:id", protect, deleteLead);
+router.get("/stats", protect, hasPermission("dashboard.view"), getStats);
+router.get("/export/csv", protect, hasPermission("clients.view"), exportCSV);
+router.get("/", protect, hasPermission("clients.view"), getLeads);
+router.get("/:id", protect, hasPermission("clients.view"), getLead);
+router.patch("/:id", protect, hasPermission("clients.edit"), updateLead);
+router.delete("/:id", protect, hasPermission("clients.delete"), deleteLead);
 
 module.exports = router;

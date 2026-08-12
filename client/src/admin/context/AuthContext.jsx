@@ -25,7 +25,12 @@ export function AuthProvider({ children }) {
     return res;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await api.post("/auth/logout", {});
+    } catch {
+      // Logout should still clear local state if the server is unreachable.
+    }
     localStorage.removeItem("arp_admin_token");
     setAdmin(null);
   }, []);

@@ -4,6 +4,7 @@ const {
   sendAdminNotification,
   sendCustomerAcknowledgement,
 } = require("../config/email");
+const { writeAudit } = require("../utils/audit");
 
 // POST /api/leads  — public (contact form submission)
 exports.createLead = async (req, res, next) => {
@@ -131,6 +132,7 @@ exports.updateLead = async (req, res, next) => {
 
     const lead = await Lead.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
     if (!lead) return res.status(404).json({ success: false, message: "Lead not found" });
+    await writeAudit(req, "CLIENT_UPDATED", "LEADS", `${req.admin.email} updated lead ${lead.email}`);
     res.json({ success: true, lead });
   } catch (err) {
     next(err);
@@ -142,6 +144,7 @@ exports.deleteLead = async (req, res, next) => {
   try {
     const lead = await Lead.findByIdAndDelete(req.params.id);
     if (!lead) return res.status(404).json({ success: false, message: "Lead not found" });
+    await writeAudit(req, "CLIENT_DELETED", "LEADS", `${req.admin.email} deleted lead ${lead.email}`);
     res.json({ success: true, message: "Lead deleted" });
   } catch (err) {
     next(err);

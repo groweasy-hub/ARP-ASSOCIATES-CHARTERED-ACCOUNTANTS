@@ -48,6 +48,9 @@ const initialFormValues = {
   message: "",
 };
 
+const API_ROOT = (process.env.REACT_APP_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
+const API_BASE = API_ROOT.endsWith("/api") ? API_ROOT : `${API_ROOT}/api`;
+
 const contactCards = [
   { title: "Call Us", value: "+91 9032576131", icon: faPhone },
   { title: "Email Us", value: "arpassociateshyd@gmail.com", icon: faEnvelope },
@@ -104,14 +107,11 @@ function Contact() {
     setFormStatus({ type: "loading", message: "" });
 
     try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_URL || "http://localhost:5000/api"}/leads`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formValues),
-        }
-      );
+      const res = await fetch(`${API_BASE}/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
       const data = await res.json();
       if (data.success) {
         setFormValues(initialFormValues);

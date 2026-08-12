@@ -9,10 +9,11 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorHandler");
+const { ensureRoles } = require("./middlewares/auth");
 
 const app = express();
 
-connectDB();
+connectDB().then(() => ensureRoles()).catch((error) => console.error(error.message));
 
 const allowedOrigins = [
   process.env.CLIENT_URL,
@@ -46,6 +47,10 @@ app.use(
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/leads", require("./routes/leads"));
+app.use("/api/users", require("./routes/users"));
+app.use("/api/roles", require("./routes/roles"));
+app.use("/api/audit-logs", require("./routes/auditLogs"));
+app.use("/api/notifications", require("./routes/notifications"));
 
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 

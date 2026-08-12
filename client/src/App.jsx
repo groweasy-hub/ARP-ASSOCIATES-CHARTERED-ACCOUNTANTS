@@ -24,6 +24,12 @@ import Dashboard from "./admin/pages/Dashboard";
 import Leads from "./admin/pages/Leads";
 import Messages from "./admin/pages/Messages";
 import Settings from "./admin/pages/Settings";
+import TeamManagement from "./admin/pages/TeamManagement";
+import UserProfile from "./admin/pages/UserProfile";
+import RolesPermissions from "./admin/pages/RolesPermissions";
+import AuditLogs from "./admin/pages/AuditLogs";
+import Notifications from "./admin/pages/Notifications";
+import Unauthorized from "./admin/pages/Unauthorized";
 
 function App() {
   return (
@@ -44,20 +50,27 @@ function App() {
               <Route path="/contact" element={<Contact />} />
             </Route>
 
+            <Route path="/login" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute permissions={["dashboard.view"]}>
                   <AdminLayout />
                 </ProtectedRoute>
               }
             >
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="leads" element={<Leads />} />
-              <Route path="messages" element={<Messages />} />
-              <Route path="settings" element={<Settings />} />
+              <Route path="dashboard" element={<ProtectedRoute permissions={["dashboard.view"]}><Dashboard /></ProtectedRoute>} />
+              <Route path="leads" element={<ProtectedRoute permissions={["clients.view"]}><Leads /></ProtectedRoute>} />
+              <Route path="messages" element={<ProtectedRoute permissions={["clients.view"]}><Messages /></ProtectedRoute>} />
+              <Route path="team" element={<ProtectedRoute permissions={["team.view"]}><TeamManagement /></ProtectedRoute>} />
+              <Route path="team/:id" element={<ProtectedRoute permissions={["team.view"]}><UserProfile /></ProtectedRoute>} />
+              <Route path="roles" element={<ProtectedRoute permissions={["roles.view"]}><RolesPermissions /></ProtectedRoute>} />
+              <Route path="audit-logs" element={<ProtectedRoute permissions={["audit_logs.view"]}><AuditLogs /></ProtectedRoute>} />
+              <Route path="notifications" element={<ProtectedRoute permissions={["notifications.view"]}><Notifications /></ProtectedRoute>} />
+              <Route path="settings" element={<ProtectedRoute permissions={["settings.view"]}><Settings /></ProtectedRoute>} />
+              <Route path="unauthorized" element={<Unauthorized />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
