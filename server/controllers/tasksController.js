@@ -24,6 +24,9 @@ const createTaskAssignedNotification = async (task) => {
   if (!task.assignedTo) return;
   await Notification.create({
     user: task.assignedTo._id || task.assignedTo,
+    task: task._id,
+    assignedTo: task.assignedTo._id || task.assignedTo,
+    url: `/admin/tasks?filter=assigned&employee=${encodeURIComponent(String(task.assignedTo._id || task.assignedTo))}&task=${encodeURIComponent(String(task._id))}`,
     title: "New task assigned",
     message: `${actorName(task.assignedBy)} assigned ${task.service} for ${clientName(task.client)}. Due date: ${
       task.dueDate ? String(task.dueDate).slice(0, 10) : "-"
@@ -66,6 +69,9 @@ const createTaskStatusNotifications = async (task, actor) => {
   await Notification.insertMany(
     recipientList.map((recipientId) => ({
       user: recipientId,
+      task: task._id,
+      assignedTo: task.assignedTo?._id || task.assignedTo,
+      url: `/admin/tasks?filter=assigned&employee=${encodeURIComponent(String(task.assignedTo?._id || task.assignedTo || recipientId))}&task=${encodeURIComponent(String(task._id))}`,
       title: "Task status updated",
       message: `${actorName(actor)} updated ${task.service} for ${clientName(task.client)} to ${task.workStatus}.`,
       type: "task_status_updated",

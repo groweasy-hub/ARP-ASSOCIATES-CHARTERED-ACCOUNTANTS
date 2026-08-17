@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import api from "../api";
 
@@ -8,9 +9,25 @@ const Item = styled.button`text-align:left;background:#fff;border:1px solid ${({
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate();
   const load = async () => { const res = await api.get("/notifications"); if (res.success) setNotifications(res.notifications); };
   useEffect(() => { load(); }, []);
-  const markRead = async (item) => { if (!item.isRead) { await api.patch(`/notifications/${item._id}/read`, {}); load(); } };
+  const targetUrl = (item) => {
+    if (item.url) return item.url;
+    if (item.task) {
+      const taskId = item.task?._id || item.task;
+      const employeeId = item.assignedTo?._id || item.assignedTo || item.user?._id || item.user || "all";
+      return `/admin/tasks?filter=assigned&employee=${encodeURIComponent(employeeId)}&task=${encodeURIComponent(taskId)}`;
+    }
+    if (String(item.type || "").startsWith("task")) return "/admin/tasks?filter=assigned";
+    return "";
+  };
+  const markRead = async (item) => {
+    if (!item.isRead) await api.patch(`/notifications/${item._id}/read`, {});
+    const url = targetUrl(item);
+    if (url) navigate(url);
+    else load();
+  };
   return <div><Header><h2>Notifications</h2><p>Recent task, notice, invoice, payment, and account alerts.</p></Header><List>
     {notifications.length === 0 ? <Item as="div" $read><h3>No notifications</h3><p>New alerts will appear here.</p></Item> :
     notifications.map((item) => <Item key={item._id} $read={item.isRead} onClick={() => markRead(item)}><h3>{item.title}</h3><p>{item.message}</p><span>{new Date(item.createdAt).toLocaleString("en-IN")}</span></Item>)}

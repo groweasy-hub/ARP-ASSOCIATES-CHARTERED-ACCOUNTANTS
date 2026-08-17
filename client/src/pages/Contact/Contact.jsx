@@ -48,7 +48,9 @@ const initialFormValues = {
   message: "",
 };
 
-const API_ROOT = (process.env.REACT_APP_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
+const API_ROOT = (
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api"
+).replace(/\/+$/, "");
 const API_BASE = API_ROOT.endsWith("/api") ? API_ROOT : `${API_ROOT}/api`;
 
 const contactCards = [
@@ -58,7 +60,7 @@ const contactCards = [
     title: "Hyderabad Branch Partner",
     value: "ANOOP KUMAR SHAH",
     meta: "Partner",
-    phone: "+91 9032576131",
+    phone: "+91 7013785840",
     icon: faUser,
   },
 ];
@@ -70,8 +72,8 @@ const branches = [
       "133/1A, Pushka Bhavan, SN Banerjee Road",
       "4th Floor, Kolkata - 700013.",
     ],
-    partner: "SUDHIR KUMAR SHARMA",
-    phone: "+91 9830302020",
+    partner: "ADHIR KUMAR PAUL",
+    phone: "+91 9032576131",
     email: "arpkolkata@gmail.com",
   },
   {
@@ -81,7 +83,7 @@ const branches = [
       "Hyderabad, Telangana - 500016.",
     ],
     partner: "ANOOP KUMAR SHAH",
-    phone: "+91 9032576131",
+    phone: "+91 7013785840",
     email: "arpassociateshyd@gmail.com",
   },
 ];
@@ -121,10 +123,16 @@ function Contact() {
             "Thank you for reaching out! We have received your message and will get back to you shortly.",
         });
       } else {
-        setFormStatus({ type: "error", message: data.message || "Something went wrong. Please try again." });
+        setFormStatus({
+          type: "error",
+          message: data.message || "Something went wrong. Please try again.",
+        });
       }
     } catch {
-      setFormStatus({ type: "error", message: "Unable to send message. Please try again later." });
+      setFormStatus({
+        type: "error",
+        message: "Unable to send message. Please try again later.",
+      });
     }
   };
 
@@ -258,7 +266,9 @@ function Contact() {
             {formStatus.type === "loading" ? "Sending…" : "Send Message"}
           </SubmitButton>
           {formStatus.message && (
-            <FormStatus $type={formStatus.type}>{formStatus.message}</FormStatus>
+            <FormStatus $type={formStatus.type}>
+              {formStatus.message}
+            </FormStatus>
           )}
         </FormPanel>
 
