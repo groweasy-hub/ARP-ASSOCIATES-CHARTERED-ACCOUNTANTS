@@ -50,7 +50,8 @@ export const HeroSection = styled.section`
     linear-gradient(90deg, #ffffff 0%, #ffffff 41%, #eef6fd 100%);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    min-height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
     background:
       radial-gradient(
         circle at 72% 27%,
@@ -95,16 +96,17 @@ export const HeroInner = styled.div`
       "trust";
     align-items: start;
     width: 100%;
-    min-height: auto;
-    padding: 28px 24px 26px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 72px 24px 42px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding: 24px 20px 24px;
+    padding: 66px 20px 40px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
-    padding: 22px 18px 22px;
+    padding: 62px 18px 38px;
   }
 `;
 
@@ -248,7 +250,7 @@ export const HeroActions = styled.div`
     display: flex;
     gap: 12px;
     width: 100%;
-    margin: 18px 0 30px;
+    margin: 0 0 30px;
     justify-content: center;
   }
 `;

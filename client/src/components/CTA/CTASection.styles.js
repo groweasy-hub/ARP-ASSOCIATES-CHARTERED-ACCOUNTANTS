@@ -6,7 +6,7 @@ export const CTASectionWrapper = styled.section`
   background: #ffffff;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding: 46px 0 50px;
+    padding: 28px 0 30px;
   }
 `;
 
@@ -55,8 +55,8 @@ export const CTAShell = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
-    gap: 30px;
-    width: min(calc(100% - 36px), 360px);
+    gap: 18px;
+    width: min(calc(100% - 36px), 320px);
     min-height: 0;
     padding: 0;
   }
@@ -76,7 +76,7 @@ export const CTAIntro = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
-    gap: 18px;
+    gap: 12px;
     text-align: center;
   }
 `;
@@ -107,12 +107,12 @@ export const CTAIcon = styled.span`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    width: 58px;
-    height: 58px;
+    width: 38px;
+    height: 38px;
 
     svg {
-      width: 27px;
-      height: 27px;
+      width: 17px;
+      height: 17px;
     }
   }
 `;
@@ -146,9 +146,9 @@ export const CTATitle = styled.h2`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    max-width: 310px;
-    font-size: 1.18rem;
-    line-height: 1.3;
+    max-width: 280px;
+    font-size: 0.9rem;
+    line-height: 1.24;
   }
 `;
 
@@ -166,10 +166,10 @@ export const CTASubtitle = styled.p`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    max-width: 270px;
-    margin: 16px auto 0;
-    font-size: 0.78rem;
-    line-height: 1.45;
+    max-width: 250px;
+    margin: 8px auto 0;
+    font-size: 0.64rem;
+    line-height: 1.35;
   }
 `;
 
@@ -184,7 +184,7 @@ export const CTAFeatures = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     grid-template-columns: minmax(0, 1fr);
-    gap: 22px;
+    gap: 10px;
     justify-self: stretch;
     min-height: 0;
     padding: 0;
@@ -207,11 +207,11 @@ export const CTAFeature = styled.div`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-columns: 30px minmax(0, 1fr);
     align-items: center;
     justify-items: start;
-    gap: 16px;
-    font-size: 0.78rem;
+    gap: 10px;
+    font-size: 0.64rem;
     text-align: left;
 
     & + & {
@@ -236,12 +236,12 @@ export const CTAFeatureIcon = styled.span`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    width: 42px;
-    height: 42px;
+    width: 28px;
+    height: 28px;
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 12px;
+      height: 12px;
     }
   }
 `;
@@ -254,7 +254,7 @@ export const CTAActions = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     width: 100%;
-    gap: 12px;
+    gap: 8px;
   }
 `;
 
@@ -309,12 +309,17 @@ export const CTAButton = styled(NavLink)`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    gap: 12px;
+    gap: 8px;
     min-width: 0;
-    height: 48px;
-    padding: 0 18px;
-    font-size: 0.82rem;
+    height: 36px;
+    padding: 0 14px;
+    font-size: 0.66rem;
     box-shadow: ${({ $variant, theme }) =>
       $variant === "primary" ? theme.shadows.md : "none"};
+
+    svg {
+      width: 0.68rem;
+      height: 0.68rem;
+    }
   }
 `;
