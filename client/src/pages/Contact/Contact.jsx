@@ -70,7 +70,7 @@ const branches = [
       "133/1A, Pushka Bhavan, SN Banerjee Road",
       "4th Floor, Kolkata - 700013.",
     ],
-    partner: "SUDHIR KUMAR SHARMA",
+    partner: "ADHIR KUMAR PAUL",
     phone: "+91 9830302020",
     email: "arpkolkata@gmail.com",
   },
