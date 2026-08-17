@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { ROLE_NAMES } = require("../config/permissions");
+const { verifyAndMigratePassword } = require("../utils/authSecurity");
 
 const adminSchema = new mongoose.Schema(
   {
@@ -8,25 +9,33 @@ const adminSchema = new mongoose.Schema(
     lastName: { type: String, trim: true, default: "" },
     email: { type: String, required: true, unique: true, lowercase: true },
     phone: { type: String, trim: true, default: "" },
-    employeeId: { type: String, trim: true, default: "" },
-    department: { type: String, trim: true, default: "Administration" },
+    employeeId: { type: String, trim: true, uppercase: true, default: "" },
+    designation: { type: String, trim: true, default: "" },
+    department: { type: String, trim: true, default: "" },
+    address: { type: String, trim: true, default: "" },
+    dateOfJoining: Date,
+    teamMate: { type: String, trim: true, default: "" },
     password: { type: String, required: true },
     role: {
       type: String,
       enum: Object.values(ROLE_NAMES),
-      default: ROLE_NAMES.TEAM_MEMBER,
+      default: ROLE_NAMES.EMPLOYEE,
     },
     customRole: { type: mongoose.Schema.Types.ObjectId, ref: "Role", default: null },
-    permissions: [{ type: String }],
+    mustChangePassword: { type: Boolean, default: false },
+    passwordResetToken: { type: String },
+    passwordResetExpires: { type: Date },
+    otpHash: { type: String },
+    otpPurpose: { type: String },
+    otpExpires: { type: Date },
     status: {
       type: String,
       enum: ["Active", "Inactive", "Suspended", "Pending"],
       default: "Active",
     },
     profileImage: { type: String, default: "" },
+    profileImagePublicId: { type: String, default: "" },
     lastLogin: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
   },
   { timestamps: true }
 );
@@ -34,8 +43,6 @@ const adminSchema = new mongoose.Schema(
 adminSchema.set("toJSON", {
   transform(_, ret) {
     delete ret.password;
-    delete ret.passwordResetToken;
-    delete ret.passwordResetExpires;
     return ret;
   },
 });
@@ -47,7 +54,7 @@ adminSchema.pre("save", async function (next) {
 });
 
 adminSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+  return verifyAndMigratePassword(this, candidatePassword);
 };
 
 module.exports = mongoose.model("Admin", adminSchema);

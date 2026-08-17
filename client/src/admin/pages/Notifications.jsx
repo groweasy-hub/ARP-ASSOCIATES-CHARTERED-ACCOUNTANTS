@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import api from "../api";
 
-const Header = styled.div`margin-bottom:22px;h2{margin:0 0 6px;color:#0d2244;font-size:1.25rem}p{margin:0;color:#33425e;font-size:.9rem}`;
-const List = styled.div`display:grid;gap:12px`;
-const Item = styled.button`text-align:left;background:#fff;border:1px solid ${({$read})=>$read?"rgba(13,34,68,.07)":"rgba(2,84,160,.22)"};border-radius:12px;box-shadow:0 2px 12px rgba(11,31,60,.06);padding:16px 18px;font:inherit;cursor:pointer;h3{margin:0 0 5px;color:#0d2244;font-size:.95rem}p{margin:0;color:#33425e;font-size:.85rem;line-height:1.5}span{display:block;margin-top:8px;color:#64748b;font-size:.75rem}`;
+const Header = styled.div`margin-bottom:16px;h2{margin:0 0 4px;color:#0d2244;font-size:1.08rem}p{margin:0;color:#33425e;font-size:.78rem}`;
+const List = styled.div`display:grid;gap:9px`;
+const Item = styled.button`text-align:left;background:#fff;border:1px solid ${({$read})=>$read?"rgba(13,34,68,.07)":"rgba(2,84,160,.22)"};border-radius:10px;box-shadow:0 2px 10px rgba(11,31,60,.06);padding:12px 14px;font:inherit;cursor:pointer;h3{margin:0 0 4px;color:#0d2244;font-size:.84rem}p{margin:0;color:#33425e;font-size:.76rem;line-height:1.45}span{display:block;margin-top:6px;color:#64748b;font-size:.68rem}`;
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);

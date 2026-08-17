@@ -10,10 +10,10 @@ const colors = {
 const Badge = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 5px;
+  padding: 3px 8px;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 0.66rem;
   font-weight: 600;
   font-family: Inter, sans-serif;
   background: ${({ $s }) => colors[$s]?.bg || "#f3f4f6"};
@@ -21,8 +21,8 @@ const Badge = styled.span`
 
   &::before {
     content: "";
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: ${({ $s }) => colors[$s]?.dot || "#9ca3af"};
     flex-shrink: 0;

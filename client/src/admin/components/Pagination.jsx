@@ -4,25 +4,25 @@ const Wrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 16px 0 0;
+  gap: 9px;
+  padding: 12px 0 0;
   font-family: Inter, sans-serif;
-  font-size: 0.875rem;
+  font-size: 0.76rem;
   color: #33425e;
   flex-wrap: wrap;
 `;
 
-const Buttons = styled.div`display: flex; gap: 6px;`;
+const Buttons = styled.div`display: flex; gap: 5px;`;
 
 const Btn = styled.button`
-  min-width: 36px;
-  height: 36px;
-  padding: 0 10px;
-  border-radius: 8px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 7px;
   border: 1px solid ${({ $active }) => ($active ? "#0254a0" : "rgba(13,34,68,0.16)")};
   background: ${({ $active }) => ($active ? "#0254a0" : "#fff")};
   color: ${({ $active }) => ($active ? "#fff" : "#0d2244")};
-  font-size: 0.875rem;
+  font-size: 0.76rem;
   font-family: Inter, sans-serif;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   opacity: ${({ disabled }) => (disabled ? 0.45 : 1)};

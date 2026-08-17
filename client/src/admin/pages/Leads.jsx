@@ -10,54 +10,54 @@ const fadeIn = keyframes`from{opacity:0;transform:translateY(12px)}to{opacity:1;
 
 const PageHeader = styled.div`
   display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 14px; margin-bottom: 22px;
-  h2 { margin: 0; color: #0d2244; font-size: 1.25rem; font-weight: 700; }
+  flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+  h2 { margin: 0; color: #0d2244; font-size: 1.08rem; font-weight: 700; }
 `;
 
 const ExportBtn = styled.button`
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 20px; border-radius: 8px;
+  padding: 8px 14px; border-radius: 7px;
   background: linear-gradient(135deg,#2c649c,#0254a0);
-  color: #fff; border: none; font-size: 0.875rem; font-weight: 600;
+  color: #fff; border: none; font-size: 0.78rem; font-weight: 600;
   font-family: inherit; cursor: pointer; transition: opacity 150ms;
   &:hover { opacity: 0.88; }
-  svg { width: 16px; height: 16px; }
+  svg { width: 14px; height: 14px; }
 `;
 
 const Toolbar = styled.div`
-  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px;
+  display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 12px;
 `;
 
 const SearchInput = styled.input`
-  flex: 1; min-width: 200px; height: 42px; padding: 0 14px;
-  border: 1.5px solid rgba(13,34,68,0.16); border-radius: 8px;
-  font: inherit; font-size: 0.875rem; color: #26395d; background: #fff; outline: none;
+  flex: 1; min-width: 180px; height: 36px; padding: 0 11px;
+  border: 1.5px solid rgba(13,34,68,0.16); border-radius: 7px;
+  font: inherit; font-size: 0.78rem; color: #26395d; background: #fff; outline: none;
   &:focus { border-color: #0254a0; }
 `;
 
 const Select = styled.select`
-  height: 42px; padding: 0 12px; border-radius: 8px;
+  height: 36px; padding: 0 10px; border-radius: 7px;
   border: 1.5px solid rgba(13,34,68,0.16); background: #fff;
-  font: inherit; font-size: 0.875rem; color: #26395d; outline: none; cursor: pointer;
+  font: inherit; font-size: 0.78rem; color: #26395d; outline: none; cursor: pointer;
   &:focus { border-color: #0254a0; }
 `;
 
 const TableWrap = styled.div`
-  background: #fff; border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(11,31,60,0.07);
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(11,31,60,0.06);
   border: 1px solid rgba(13,34,68,0.07); overflow: hidden;
 `;
 
 const Table = styled.table`
-  width: 100%; border-collapse: collapse; font-size: 0.875rem;
-  th { padding: 13px 16px; text-align: left; color: #33425e; font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; background: #f6fbff; border-bottom: 1px solid rgba(13,34,68,0.08); white-space: nowrap; }
-  td { padding: 13px 16px; color: #0d2244; border-bottom: 1px solid rgba(13,34,68,0.06); vertical-align: middle; }
+  width: 100%; border-collapse: collapse; font-size: 0.78rem;
+  th { padding: 9px 11px; text-align: left; color: #33425e; font-weight: 600; font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.04em; background: #f6fbff; border-bottom: 1px solid rgba(13,34,68,0.08); white-space: nowrap; }
+  td { padding: 9px 11px; color: #0d2244; border-bottom: 1px solid rgba(13,34,68,0.06); vertical-align: middle; }
   tr:last-child td { border-bottom: 0; }
   tr:hover td { background: #f9fbff; }
 `;
 
 const ActionBtn = styled.button`
-  padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+  padding: 5px 9px; border-radius: 6px; font-size: 0.7rem; font-weight: 600;
   font-family: inherit; cursor: pointer; border: 1px solid;
   transition: all 150ms;
   ${({ $variant }) =>
@@ -77,9 +77,9 @@ const Skeleton = styled.div`
 `;
 
 const Empty = styled.div`
-  text-align: center; padding: 56px 24px; color: #33425e;
-  svg { width: 48px; height: 48px; color: #c5d4e8; margin-bottom: 14px; }
-  p { margin: 0; font-size: 0.9rem; }
+  text-align: center; padding: 38px 18px; color: #33425e;
+  svg { width: 38px; height: 38px; color: #c5d4e8; margin-bottom: 10px; }
+  p { margin: 0; font-size: 0.8rem; }
 `;
 
 // Modal
@@ -87,12 +87,12 @@ const ModalOverlay = styled.div`
   position: fixed; inset: 0; z-index: 8000;
   background: rgba(11,31,60,0.45);
   display: flex; align-items: center; justify-content: center;
-  padding: 16px;
+  padding: 12px;
   animation: ${fadeIn} 0.2s ease;
 `;
 
 const Modal = styled.div`
-  background: #fff; border-radius: 16px; width: 100%; max-width: 600px;
+  background: #fff; border-radius: 12px; width: 100%; max-width: 540px;
   max-height: 90vh; overflow-y: auto;
   box-shadow: 0 24px 80px rgba(11,31,60,0.22);
   animation: ${fadeIn} 0.25s cubic-bezier(0.22,1,0.36,1);
@@ -100,49 +100,294 @@ const Modal = styled.div`
 
 const ModalHeader = styled.div`
   display: flex; align-items: center; justify-content: space-between;
-  padding: 22px 28px; border-bottom: 1px solid rgba(13,34,68,0.1);
-  h3 { margin: 0; color: #0d2244; font-size: 1.05rem; font-weight: 700; }
-  button { background: none; border: none; cursor: pointer; color: #33425e; font-size: 20px; line-height: 1; padding: 0; }
+  padding: 16px 20px; border-bottom: 1px solid rgba(13,34,68,0.1);
+  h3 { margin: 0; color: #0d2244; font-size: 0.95rem; font-weight: 700; }
+  button { background: none; border: none; cursor: pointer; color: #33425e; font-size: 18px; line-height: 1; padding: 0; }
 `;
 
-const ModalBody = styled.div`padding: 24px 28px;`;
+const ModalBody = styled.div`padding: 18px 20px;`;
 
 const DetailRow = styled.div`
   display: grid; grid-template-columns: 130px 1fr; gap: 8px;
-  padding: 10px 0; border-bottom: 1px solid rgba(13,34,68,0.07);
-  font-size: 0.875rem;
+  padding: 8px 0; border-bottom: 1px solid rgba(13,34,68,0.07);
+  font-size: 0.78rem;
   &:last-child { border-bottom: 0; }
   label { color: #33425e; font-weight: 600; }
   span { color: #0d2244; line-height: 1.55; word-break: break-word; }
 `;
 
 const ModalField = styled.div`
-  margin-top: 18px;
-  label { display: block; margin-bottom: 7px; color: #0d2244; font-size: 0.875rem; font-weight: 600; }
+  margin-top: 14px;
+  label { display: block; margin-bottom: 6px; color: #0d2244; font-size: 0.78rem; font-weight: 600; }
 `;
 
 const ModalSelect = styled.select`
-  width: 100%; height: 44px; padding: 0 12px; border-radius: 8px;
+  width: 100%; height: 38px; padding: 0 10px; border-radius: 7px;
   border: 1.5px solid rgba(13,34,68,0.16); background: #fff;
-  font: inherit; font-size: 0.875rem; color: #26395d; outline: none;
+  font: inherit; font-size: 0.78rem; color: #26395d; outline: none;
   &:focus { border-color: #0254a0; }
 `;
 
 const ModalTextarea = styled.textarea`
-  width: 100%; padding: 12px 14px; border-radius: 8px;
+  width: 100%; padding: 10px 12px; border-radius: 7px;
   border: 1.5px solid rgba(13,34,68,0.16); background: #fff;
-  font: inherit; font-size: 0.875rem; color: #26395d; outline: none;
+  font: inherit; font-size: 0.78rem; color: #26395d; outline: none;
   resize: vertical; box-sizing: border-box;
   &:focus { border-color: #0254a0; }
 `;
 
 const SaveBtn = styled.button`
-  margin-top: 16px; padding: 10px 24px; border-radius: 8px;
+  margin-top: 14px; padding: 8px 18px; border-radius: 7px;
   background: linear-gradient(135deg,#2c649c,#0254a0); color: #fff;
-  border: none; font-size: 0.875rem; font-weight: 600; font-family: inherit;
+  border: none; font-size: 0.78rem; font-weight: 600; font-family: inherit;
   cursor: pointer; transition: opacity 150ms;
   &:hover { opacity: 0.88; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
+`;
+
+const DesktopLeads = styled.div`
+  @media (max-width: 760px) {
+    display: none;
+  }
+`;
+
+const MobileLeads = styled.div`
+  display: none;
+
+  @media (max-width: 760px) {
+    display: grid;
+    gap: 14px;
+  }
+`;
+
+const MobileTitle = styled.h2`
+  margin: 0 0 2px;
+  color: #071e49;
+  font-size: 1.18rem;
+  font-weight: 800;
+`;
+
+const MobileSearch = styled.div`
+  position: relative;
+
+  svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    color: #64748b;
+  }
+
+  input {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    border: 1px solid rgba(13,34,68,0.12);
+    border-radius: 10px;
+    padding: 0 14px 0 44px;
+    background: #ffffff;
+    color: #071e49;
+    font: inherit;
+    font-size: 0.78rem;
+    outline: none;
+    box-shadow: 0 8px 20px rgba(11,31,60,0.04);
+  }
+`;
+
+const MobileFilterRow = styled.div`
+  display: grid;
+  grid-template-columns: 0.78fr 0.9fr 1.05fr 0.95fr;
+  gap: 5px;
+
+  select {
+    width: 100%;
+    height: 36px;
+    border: 1px solid rgba(13,34,68,0.12);
+    border-radius: 8px;
+    padding: 0 4px;
+    background: #ffffff;
+    color: #071e49;
+    font: inherit;
+    font-size: 0.56rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+`;
+
+const MobileExport = styled(ExportBtn)`
+  height: 36px;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 5px;
+  border-radius: 8px;
+  font-size: 0.55rem;
+  white-space: nowrap;
+
+  svg {
+    width: 11px;
+    height: 11px;
+    flex: 0 0 auto;
+  }
+`;
+
+const MobileStatGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+`;
+
+const MobileStatCard = styled.div`
+  min-height: 84px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(13,34,68,0.07);
+  box-shadow: 0 10px 24px rgba(11,31,60,0.07);
+
+  i {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: ${({ $bg }) => $bg || "#eaf3fb"};
+    color: ${({ $color }) => $color || "#0254a0"};
+    font-style: normal;
+    margin-bottom: 8px;
+  }
+
+  svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  span {
+    display: block;
+    color: #071e49;
+    font-size: 0.64rem;
+    font-weight: 800;
+  }
+
+  strong {
+    display: block;
+    margin-top: 4px;
+    color: #071e49;
+    font-size: 1rem;
+  }
+`;
+
+const MobileLeadCard = styled.div`
+  padding: 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(13,34,68,0.07);
+  box-shadow: 0 10px 24px rgba(11,31,60,0.07);
+`;
+
+const MobileLeadTop = styled.div`
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+`;
+
+const MobileAvatar = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: #eaf3fb;
+  color: #0254a0;
+  font-size: 1.1rem;
+  font-weight: 800;
+`;
+
+const MobileLeadName = styled.div`
+  min-width: 0;
+
+  h3 {
+    margin: 0;
+    color: #071e49;
+    font-size: 0.84rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  a, span {
+    display: block;
+    margin-top: 5px;
+    color: #0254a0;
+    font-size: 0.72rem;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`;
+
+const MobilePhone = styled.div`
+  margin-top: 9px;
+  color: #071e49;
+  font-size: 0.74rem;
+`;
+
+const MobileLeadMeta = styled.div`
+  display: grid;
+  gap: 11px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(13,34,68,0.08);
+`;
+
+const MobileMetaRow = styled.div`
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 10px;
+  color: #071e49;
+  font-size: 0.74rem;
+
+  label {
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`;
+
+const MobileCardActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+
+  button {
+    min-width: 74px;
+    height: 34px;
+    border-radius: 7px;
+    background: #ffffff;
+    font: inherit;
+    font-size: 0.68rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+`;
+
+const MobileViewBtn = styled.button`
+  border: 1px solid #0b66d8;
+  color: #0b66d8;
+`;
+
+const MobileDeleteBtn = styled.button`
+  border: 1px solid #ef4444;
+  color: #ef4444;
 `;
 
 const STATUSES = ["All", "New", "Contacted", "Follow Up", "Closed"];
@@ -211,8 +456,12 @@ export default function Leads() {
     api.downloadCSV(`/leads/export/csv?${q}`).catch(() => toast.error("Export failed"));
   };
 
+  const unreadCount = leads.filter((lead) => !lead.isRead).length;
+  const newCount = leads.filter((lead) => lead.status === "New").length;
+
   return (
-    <div>
+    <>
+    <DesktopLeads>
       <PageHeader>
         <h2>Leads Management</h2>
         <ExportBtn onClick={handleExport}>
@@ -277,6 +526,8 @@ export default function Leads() {
         </div>
       </TableWrap>
 
+    </DesktopLeads>
+
       {selected && (
         <ModalOverlay onClick={() => setSelected(null)}>
           <Modal onClick={(e) => e.stopPropagation()}>
@@ -319,6 +570,85 @@ export default function Leads() {
           onCancel={() => setDeleteId(null)}
         />
       )}
-    </div>
+    <MobileLeads>
+      <MobileTitle>Leads Overview</MobileTitle>
+      <MobileSearch>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input
+          placeholder="Search name, email, phone, subject..."
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+      </MobileSearch>
+      <MobileFilterRow>
+        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
+          {STATUSES.map((s) => <option key={s}>{s}</option>)}
+        </select>
+        <select value={period} onChange={(e) => { setPeriod(e.target.value); setPage(1); }}>
+          {PERIODS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+        </select>
+        <select value={sort} onChange={(e) => { setSort(e.target.value); setPage(1); }}>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+        <MobileExport onClick={handleExport}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </MobileExport>
+      </MobileFilterRow>
+      <MobileStatGrid>
+        <MobileStatCard $bg="#eaf3fb" $color="#0254a0">
+          <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></i>
+          <span>Total Leads</span>
+          <strong>{total}</strong>
+        </MobileStatCard>
+        <MobileStatCard $bg="#dcfce7" $color="#16a34a">
+          <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/></svg></i>
+          <span>New Leads</span>
+          <strong>{newCount}</strong>
+        </MobileStatCard>
+        <MobileStatCard $bg="#f3e8ff" $color="#7c3aed">
+          <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></i>
+          <span>Unread</span>
+          <strong>{unreadCount}</strong>
+        </MobileStatCard>
+      </MobileStatGrid>
+
+      <MobileTitle>Leads List</MobileTitle>
+      {loading ? (
+        Array.from({ length: 3 }).map((_, index) => (
+          <MobileLeadCard key={index}>
+            <Skeleton $h="120px" />
+          </MobileLeadCard>
+        ))
+      ) : leads.length === 0 ? (
+        <MobileLeadCard>No leads found</MobileLeadCard>
+      ) : (
+        leads.map((lead) => (
+          <MobileLeadCard key={lead._id}>
+            <MobileLeadTop>
+              <MobileAvatar>{lead.name?.[0]?.toUpperCase() || "L"}</MobileAvatar>
+              <MobileLeadName>
+                <h3>{lead.name}</h3>
+                <a href={`mailto:${lead.email}`}>{lead.email}</a>
+                <MobilePhone>{lead.phone}</MobilePhone>
+              </MobileLeadName>
+              <StatusBadge status={lead.status} />
+            </MobileLeadTop>
+            <MobileLeadMeta>
+              <MobileMetaRow><label>Subject</label><span>{lead.subject}</span></MobileMetaRow>
+              <MobileMetaRow><label>Message</label><span>{lead.message}</span></MobileMetaRow>
+              <MobileMetaRow><label>Date & Time</label><span>{new Date(lead.createdAt).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span></MobileMetaRow>
+            </MobileLeadMeta>
+            <MobileCardActions>
+              <MobileViewBtn type="button" onClick={() => openModal(lead)}>View</MobileViewBtn>
+              <MobileDeleteBtn type="button" onClick={() => setDeleteId(lead._id)}>Delete</MobileDeleteBtn>
+            </MobileCardActions>
+          </MobileLeadCard>
+        ))
+      )}
+      <Pagination page={page} pages={pages} total={total} limit={10} onPage={setPage} />
+    </MobileLeads>
+    </>
   );
 }

@@ -9,11 +9,11 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorHandler");
-const { ensureRoles } = require("./middlewares/auth");
+const { startTaskScheduler } = require("./controllers/tasksController");
 
 const app = express();
 
-connectDB().then(() => ensureRoles()).catch((error) => console.error(error.message));
+connectDB().then(startTaskScheduler);
 
 const allowedOrigins = [
   process.env.CLIENT_URL,
@@ -22,34 +22,32 @@ const allowedOrigins = [
   "https://www.arpassociates.in",
   "https://arpassociates.in",
 ]
-  .map((origin) => origin && origin.trim())
+  .map((o) => o && o.trim())
   .filter(Boolean);
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "5mb" }));
 
-// Rate limit contact form
 app.use(
-  "/api/leads",
+  ["/api/leads", "/leads"],
   rateLimit({ windowMs: 15 * 60 * 1000, max: 30, message: { success: false, message: "Too many requests" } })
 );
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/leads", require("./routes/leads"));
+app.use("/leads", require("./routes/leads"));
+app.use("/api/clients", require("./routes/clients"));
 app.use("/api/users", require("./routes/users"));
-app.use("/api/roles", require("./routes/roles"));
-app.use("/api/audit-logs", require("./routes/auditLogs"));
+app.use("/api/tasks", require("./routes/tasks"));
+app.use("/api/billing", require("./routes/billing"));
 app.use("/api/notifications", require("./routes/notifications"));
 
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));

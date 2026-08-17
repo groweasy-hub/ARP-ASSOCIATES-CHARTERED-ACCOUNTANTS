@@ -4,7 +4,7 @@ import { ThemeProvider } from "styled-components";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import MainLayout from "./layouts/MainLayout";
 import GlobalStyles from "./styles/GlobalStyles";
-import theme from "./styles/theme";
+import theme, { adminTheme } from "./styles/theme";
 
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
@@ -22,12 +22,12 @@ import AdminLayout from "./admin/components/AdminLayout";
 import AdminLogin from "./admin/pages/AdminLogin";
 import Dashboard from "./admin/pages/Dashboard";
 import Leads from "./admin/pages/Leads";
+import ClientManagement from "./admin/pages/ClientManagement";
+import Tasks from "./admin/pages/Tasks";
 import Messages from "./admin/pages/Messages";
 import Settings from "./admin/pages/Settings";
 import TeamManagement from "./admin/pages/TeamManagement";
 import UserProfile from "./admin/pages/UserProfile";
-import RolesPermissions from "./admin/pages/RolesPermissions";
-import AuditLogs from "./admin/pages/AuditLogs";
 import Notifications from "./admin/pages/Notifications";
 import Unauthorized from "./admin/pages/Unauthorized";
 
@@ -50,26 +50,46 @@ function App() {
               <Route path="/contact" element={<Contact />} />
             </Route>
 
-            <Route path="/login" element={<AdminLogin />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/login"
+              element={
+                <ThemeProvider theme={adminTheme}>
+                  <AdminLogin />
+                </ThemeProvider>
+              }
+            />
+            <Route
+              path="/admin/login"
+              element={
+                <ThemeProvider theme={adminTheme}>
+                  <AdminLogin />
+                </ThemeProvider>
+              }
+            />
             <Route
               path="/admin"
               element={
-                <ProtectedRoute permissions={["dashboard.view"]}>
-                  <AdminLayout />
-                </ProtectedRoute>
+                <ThemeProvider theme={adminTheme}>
+                  <ProtectedRoute>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                </ThemeProvider>
               }
             >
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
-              <Route path="dashboard" element={<ProtectedRoute permissions={["dashboard.view"]}><Dashboard /></ProtectedRoute>} />
-              <Route path="leads" element={<ProtectedRoute permissions={["clients.view"]}><Leads /></ProtectedRoute>} />
-              <Route path="messages" element={<ProtectedRoute permissions={["clients.view"]}><Messages /></ProtectedRoute>} />
-              <Route path="team" element={<ProtectedRoute permissions={["team.view"]}><TeamManagement /></ProtectedRoute>} />
-              <Route path="team/:id" element={<ProtectedRoute permissions={["team.view"]}><UserProfile /></ProtectedRoute>} />
-              <Route path="roles" element={<ProtectedRoute permissions={["roles.view"]}><RolesPermissions /></ProtectedRoute>} />
-              <Route path="audit-logs" element={<ProtectedRoute permissions={["audit_logs.view"]}><AuditLogs /></ProtectedRoute>} />
-              <Route path="notifications" element={<ProtectedRoute permissions={["notifications.view"]}><Notifications /></ProtectedRoute>} />
-              <Route path="settings" element={<ProtectedRoute permissions={["settings.view"]}><Settings /></ProtectedRoute>} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="leads" element={<Leads />} />
+              <Route path="clients" element={<ClientManagement />} />
+              <Route path="clients/:id" element={<ClientManagement />} />
+              <Route path="tasks" element={<Tasks />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="employees" element={<TeamManagement />} />
+              <Route path="employees/:id" element={<UserProfile />} />
+              <Route path="team" element={<Navigate to="/admin/employees" replace />} />
+              <Route path="team/:id" element={<UserProfile />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="change-password" element={<Settings forcePasswordChange />} />
               <Route path="unauthorized" element={<Unauthorized />} />
             </Route>
 

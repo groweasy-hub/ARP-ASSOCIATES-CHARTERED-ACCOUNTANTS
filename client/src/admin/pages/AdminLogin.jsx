@@ -112,13 +112,17 @@ const ErrorMsg = styled.p`
 export default function AdminLogin() {
   const [form, setForm] = useState({
     email: localStorage.getItem("arp_remember_email") || "",
+    newEmail: "",
     password: "",
+    confirmPassword: "",
+    otp: "",
     remember: Boolean(localStorage.getItem("arp_remember_email")),
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -128,13 +132,39 @@ export default function AdminLogin() {
     setLoading(true);
 
     if (forgotMode) {
-      const res = await api.post("/auth/forgot-password", { email: form.email });
+      if (!otpSent) {
+        const res = await api.post("/auth/forgot-password", { email: form.email });
+        setLoading(false);
+        if (res.success) {
+          setOtpSent(true);
+          toast.success(res.message || "OTP sent to your mail");
+        } else {
+          setError(res.message || "Unable to send OTP");
+        }
+        return;
+      }
+
+      if (form.password !== form.confirmPassword) {
+        setLoading(false);
+        setError("Password and confirmation do not match");
+        return;
+      }
+
+      const res = await api.post("/auth/reset-password", {
+        email: form.email,
+        newEmail: form.newEmail,
+        otp: form.otp,
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+      });
       setLoading(false);
       if (res.success) {
-        toast.success(res.message || "Password reset request received");
+        toast.success(res.message || "Password updated successfully");
         setForgotMode(false);
+        setOtpSent(false);
+        setForm((current) => ({ ...current, password: "", confirmPassword: "", otp: "", newEmail: "" }));
       } else {
-        setError(res.message || "Unable to process reset request");
+        setError(res.message || "Unable to reset password");
       }
       return;
     }
@@ -161,22 +191,23 @@ export default function AdminLogin() {
         <CardBody>
           <form onSubmit={handleSubmit}>
             <Field>
-              <label>Email</label>
+              <label>{forgotMode ? "Email" : "Email or Employee ID"}</label>
               <Input
-                placeholder="Enter your email"
+                placeholder={forgotMode ? "Enter your email" : "Enter email or employee ID"}
                 required
-                type="email"
+                type={forgotMode ? "email" : "text"}
                 value={form.email}
                 onChange={(event) => setForm({ ...form, email: event.target.value })}
               />
             </Field>
             <Field>
-              <label>Password</label>
+              <label>{forgotMode ? "New Password" : "Password"}</label>
               <div style={{ position: "relative" }}>
                 <Input
-                  disabled={forgotMode}
-                  placeholder="Enter your password"
-                  required={!forgotMode}
+                  disabled={forgotMode && !otpSent}
+                  minLength={forgotMode ? 8 : undefined}
+                  placeholder={forgotMode ? "Enter new password" : "Enter your password"}
+                  required={!forgotMode || otpSent}
                   style={{ paddingRight: 58 }}
                   type={showPassword ? "text" : "password"}
                   value={form.password}
@@ -187,14 +218,50 @@ export default function AdminLogin() {
                 </ToggleBtn>
               </div>
             </Field>
+            {forgotMode && otpSent && (
+              <>
+                <Field>
+                  <label>Confirm New Password</label>
+                  <Input
+                    placeholder="Re-enter new password"
+                    required
+                    type="password"
+                    value={form.confirmPassword}
+                    onChange={(event) => setForm({ ...form, confirmPassword: event.target.value })}
+                  />
+                </Field>
+                <Field>
+                  <label>OTP</label>
+                  <Input
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="Enter OTP from mail"
+                    required
+                    value={form.otp}
+                    onChange={(event) => setForm({ ...form, otp: event.target.value })}
+                  />
+                </Field>
+                <Field>
+                  <label>New Email</label>
+                  <Input
+                    placeholder="Optional email change"
+                    type="email"
+                    value={form.newEmail}
+                    onChange={(event) => setForm({ ...form, newEmail: event.target.value })}
+                  />
+                </Field>
+              </>
+            )}
             <label style={{ display: "flex", alignItems: "center", gap: 8, color: "#33425e", fontSize: ".85rem", marginBottom: 14 }}>
               <input checked={form.remember} type="checkbox" onChange={(event) => setForm({ ...form, remember: event.target.checked })} />
               Remember me
             </label>
             <SubmitBtn disabled={loading} type="submit">
-              {loading ? (forgotMode ? "Sending..." : "Signing in...") : (forgotMode ? "Send Reset Link" : "Sign In")}
+              {loading
+                ? (forgotMode ? "Processing..." : "Signing in...")
+                : (forgotMode ? (otpSent ? "Reset Password" : "Send OTP") : "Sign In")}
             </SubmitBtn>
-            <TextBtn type="button" onClick={() => { setForgotMode((current) => !current); setError(""); }}>
+            <TextBtn type="button" onClick={() => { setForgotMode((current) => !current); setOtpSent(false); setError(""); }}>
               {forgotMode ? "Back to Sign In" : "Forgot Password?"}
             </TextBtn>
             {error && <ErrorMsg>{error}</ErrorMsg>}

@@ -27,6 +27,23 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    html,
+    body,
+    [data-page-scroll-container] {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    [data-page-scroll-container]::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+  }
+
   code {
     font-family: ${({ theme }) => theme.typography.fontMono};
   }
