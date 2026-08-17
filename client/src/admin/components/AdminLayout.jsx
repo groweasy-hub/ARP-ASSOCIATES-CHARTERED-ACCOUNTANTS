@@ -8,6 +8,9 @@ const fadeIn = keyframes`from{opacity:0;transform:translateX(-12px)}to{opacity:1
 
 const Shell = styled.div`
   display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 100vh;
   background: ${({ theme }) => theme.colors.canvas};
   font-family: ${({ theme }) => theme.typography.fontBody};
@@ -100,13 +103,21 @@ const LogoutBtn = styled.button`
 const Main = styled.div`
   margin-left: 236px;
   flex: 1;
+  min-width: 0;
+  width: auto;
+  max-width: calc(100% - 236px);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.laptop}) { margin-left: 0; }
+  @media (max-width: ${({ theme }) => theme.breakpoints.laptop}) {
+    margin-left: 0;
+    max-width: 100%;
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: 100%;
+    max-width: 100%;
     height: 100vh;
     min-height: 100vh;
     overflow: hidden;
@@ -122,6 +133,8 @@ const Header = styled.header`
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing[16]};
   padding: 0 ${({ theme }) => theme.spacing[24]};
+  min-width: 0;
+  max-width: 100%;
   height: 56px;
   background: rgba(255,255,255,0.95);
   backdrop-filter: blur(12px);
@@ -141,6 +154,9 @@ const MobileHeader = styled.header`
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     z-index: ${({ theme }) => theme.zIndex.header};
     display: flex;
     align-items: center;
@@ -178,6 +194,7 @@ const MobileAdmin = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing[8]};
   min-width: 0;
+  flex-shrink: 0;
 
   strong {
     display: block;
@@ -278,15 +295,21 @@ const AvatarLink = styled(NavLink)`
 const Content = styled.main`
   padding: ${({ theme }) => theme.spacing[24]};
   font-size: ${({ theme }) => theme.typography.size.sm};
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     position: fixed;
     left: 0;
     right: 0;
+    width: 100%;
+    max-width: 100%;
     top: 94px;
     bottom: 0;
     z-index: ${({ theme }) => theme.zIndex.sticky};
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     margin-top: 0;
     padding: 16px 12px 106px;
@@ -302,6 +325,8 @@ const MobileBottomNav = styled.nav`
     position: fixed;
     left: 10px;
     right: 10px;
+    width: auto;
+    max-width: calc(100% - 20px);
     bottom: 8px;
     z-index: ${({ theme }) => theme.zIndex.header};
     display: grid;

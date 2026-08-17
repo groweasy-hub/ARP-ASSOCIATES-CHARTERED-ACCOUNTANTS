@@ -8,7 +8,7 @@ const fadeUp = keyframes`from{opacity:0;transform:translateY(20px)}to{opacity:1;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
   gap: 14px;
   margin-bottom: 22px;
 `;
@@ -92,11 +92,16 @@ const RecentTable = styled.div`
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(11,31,60,0.06);
   border: 1px solid rgba(13,34,68,0.07);
-  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const Table = styled.table`
   width: 100%;
+  min-width: 560px;
   border-collapse: collapse;
   font-size: 0.8rem;
 

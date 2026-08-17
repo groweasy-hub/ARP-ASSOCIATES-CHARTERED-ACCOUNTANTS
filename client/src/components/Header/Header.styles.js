@@ -30,12 +30,13 @@ export const HeaderInner = styled.div`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    height: 72px;
-    padding: 0 22px;
+    height: 64px;
+    padding: 0 18px;
+    gap: 8px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
-    padding: 0 18px;
+    padding: 0 14px;
   }
 `;
 
@@ -50,6 +51,9 @@ export const Brand = styled(NavLink)`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     min-width: 0;
+    flex: 1 1 auto;
+    max-width: calc(100% - 54px);
+    overflow: hidden;
   }
 `;
 
@@ -65,7 +69,15 @@ export const BrandMark = styled.span`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    height: 36px;
+    width: clamp(52px, 15vw, 72px);
+    height: 34px;
+    flex: 0 0 clamp(52px, 15vw, 72px);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
+    width: 50px;
+    height: 32px;
+    flex-basis: 50px;
   }
 `;
 
@@ -91,9 +103,15 @@ export const BrandDivider = styled.span`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    height: 30px;
-    margin-left: 6px;
+    height: 32px;
+    margin-left: 5px;
     margin-right: 8px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
+    height: 28px;
+    margin-left: 4px;
+    margin-right: 7px;
   }
 `;
 
@@ -101,6 +119,8 @@ export const BrandText = styled.span`
   display: grid;
   gap: 6px;
   align-content: center;
+  min-width: 0;
+  overflow: hidden;
 `;
 
 export const BrandName = styled.span`
@@ -119,11 +139,14 @@ export const BrandName = styled.span`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: 16px;
+    font-size: clamp(16px, 4.6vw, 24px);
+    letter-spacing: 0.01em;
+    overflow: hidden;
+    text-overflow: clip;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
-    font-size: 14px;
+    font-size: clamp(14px, 4.6vw, 18px);
   }
 `;
 
@@ -143,8 +166,15 @@ export const BrandTagline = styled.span`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: 7.5px;
-    letter-spacing: 0.24em;
+    font-size: clamp(6.6px, 1.7vw, 8.8px);
+    letter-spacing: 0.2em;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
+    font-size: 6.2px;
+    letter-spacing: 0.15em;
   }
 `;
 
@@ -277,15 +307,25 @@ export const MenuButton = styled.button`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     display: inline-flex;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    font-size: 22px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
 
     svg {
-      width: 28px;
-      height: 28px;
+      width: 22px;
+      height: 22px;
     }
   }
 `;
@@ -321,7 +361,7 @@ export const DrawerOverlay = styled.button`
 
 export const DrawerPanel = styled.aside`
   position: absolute;
-  inset: 0 auto 0 0;
+  inset: 0 0 0 auto;
   display: flex;
   flex-direction: column;
   width: min(88vw, 430px);
@@ -332,10 +372,10 @@ export const DrawerPanel = styled.aside`
   overflow: hidden;
   color: #071b45;
   background: rgba(255, 255, 255, 0.98);
-  border-radius: 0 18px 18px 0;
-  box-shadow: 18px 0 42px rgba(7, 27, 69, 0.2);
+  border-radius: 18px 0 0 18px;
+  box-shadow: -18px 0 42px rgba(7, 27, 69, 0.2);
   box-sizing: border-box;
-  transform: translateX(${({ $open }) => ($open ? "0" : "-104%")});
+  transform: translateX(${({ $open }) => ($open ? "0" : "104%")});
   transition: transform ${({ theme }) => theme.transitions.base};
 
   ${ConsultationLink} {

@@ -8,18 +8,26 @@ const Wrap = styled.div`
   position: fixed;
   top: 24px;
   right: 24px;
+  left: auto;
   z-index: 9999;
   display: flex;
   flex-direction: column;
   gap: 10px;
   pointer-events: none;
+
+  @media (max-width: 480px) {
+    top: 14px;
+    right: 12px;
+    left: 12px;
+  }
 `;
 
 const Item = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 280px;
+  min-width: 0;
+  width: min(360px, calc(100vw - 48px));
   max-width: 360px;
   padding: 14px 18px;
   background: #fff;
@@ -35,6 +43,11 @@ const Item = styled.div`
 
   span { flex: 1; font-size: 0.875rem; color: #0d2244; font-family: Inter, sans-serif; line-height: 1.4; }
   button { background: none; border: none; cursor: pointer; color: #33425e; font-size: 16px; padding: 0; line-height: 1; }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
 
 let _addToast = null;

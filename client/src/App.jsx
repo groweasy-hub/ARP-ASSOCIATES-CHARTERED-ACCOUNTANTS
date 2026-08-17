@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
@@ -31,6 +32,23 @@ import UserProfile from "./admin/pages/UserProfile";
 import Notifications from "./admin/pages/Notifications";
 import Unauthorized from "./admin/pages/Unauthorized";
 
+function RouteDocumentState() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const isAdminRoute = location.pathname.startsWith("/admin") || location.pathname === "/login";
+    document.documentElement.classList.toggle("admin-route", isAdminRoute);
+    document.body.classList.toggle("admin-route", isAdminRoute);
+
+    return () => {
+      document.documentElement.classList.remove("admin-route");
+      document.body.classList.remove("admin-route");
+    };
+  }, [location.pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -38,6 +56,7 @@ function App() {
       <AuthProvider>
         <ToastContainer />
         <BrowserRouter>
+          <RouteDocumentState />
           <ScrollToTop />
           <Routes>
             <Route element={<MainLayout />}>

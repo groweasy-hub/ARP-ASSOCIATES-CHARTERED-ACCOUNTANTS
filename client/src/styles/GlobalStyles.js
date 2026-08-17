@@ -27,6 +27,37 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
+  html.admin-route {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  html.admin-route,
+  html.admin-route body,
+  html.admin-route #root {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html.admin-route body {
+    overflow-x: hidden;
+  }
+
+  html.admin-route img,
+  html.admin-route svg,
+  html.admin-route canvas,
+  html.admin-route video,
+  html.admin-route input,
+  html.admin-route select,
+  html.admin-route textarea,
+  html.admin-route button {
+    max-width: 100%;
+  }
+
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     html,
     body,

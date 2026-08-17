@@ -16,11 +16,16 @@ const PageHeader = styled.div`
 const TableWrap = styled.div`
   background: #fff; border-radius: 14px;
   box-shadow: 0 2px 12px rgba(11,31,60,0.07);
-  border: 1px solid rgba(13,34,68,0.07); overflow: hidden;
+  border: 1px solid rgba(13,34,68,0.07);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const Table = styled.table`
-  width: 100%; border-collapse: collapse; font-size: 0.875rem;
+  width: 100%; min-width: 720px; border-collapse: collapse; font-size: 0.875rem;
   th { padding: 13px 16px; text-align: left; color: #33425e; font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; background: #f6fbff; border-bottom: 1px solid rgba(13,34,68,0.08); white-space: nowrap; }
   td { padding: 13px 16px; color: #0d2244; border-bottom: 1px solid rgba(13,34,68,0.06); vertical-align: middle; }
   tr:last-child td { border-bottom: 0; }

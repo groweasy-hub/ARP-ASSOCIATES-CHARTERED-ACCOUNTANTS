@@ -12,7 +12,12 @@ const Wrap = styled.div`
   flex-wrap: wrap;
 `;
 
-const Buttons = styled.div`display: flex; gap: 5px;`;
+const Buttons = styled.div`
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  min-width: 0;
+`;
 
 const Btn = styled.button`
   min-width: 30px;

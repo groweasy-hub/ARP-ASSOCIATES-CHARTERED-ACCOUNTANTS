@@ -45,11 +45,16 @@ const Select = styled.select`
 const TableWrap = styled.div`
   background: #fff; border-radius: 10px;
   box-shadow: 0 2px 10px rgba(11,31,60,0.06);
-  border: 1px solid rgba(13,34,68,0.07); overflow: hidden;
+  border: 1px solid rgba(13,34,68,0.07);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const Table = styled.table`
-  width: 100%; border-collapse: collapse; font-size: 0.78rem;
+  width: 100%; min-width: 680px; border-collapse: collapse; font-size: 0.78rem;
   th { padding: 9px 11px; text-align: left; color: #33425e; font-weight: 600; font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.04em; background: #f6fbff; border-bottom: 1px solid rgba(13,34,68,0.08); white-space: nowrap; }
   td { padding: 9px 11px; color: #0d2244; border-bottom: 1px solid rgba(13,34,68,0.06); vertical-align: middle; }
   tr:last-child td { border-bottom: 0; }

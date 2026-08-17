@@ -83,9 +83,12 @@ const Toolbar = styled.div`
   display: flex;
   gap: 9px;
   flex-wrap: wrap;
+  min-width: 0;
   margin-bottom: 12px;
 `;
 const Input = styled.input`
+  width: 100%;
+  max-width: 240px;
   height: 36px;
   padding: 0 11px;
   border: 1.5px solid rgba(13, 34, 68, 0.16);
@@ -155,7 +158,11 @@ const TableWrap = styled.div`
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
   border: 1px solid rgba(13, 34, 68, 0.07);
-  overflow: auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 `;
 const DesktopClientsView = styled.div`
   @media (max-width: 768px) {
@@ -406,6 +413,7 @@ const MobileOutlineBtn = styled.button`
 `;
 const Table = styled.table`
   width: 100%;
+  min-width: 780px;
   border-collapse: collapse;
   font-size: 0.78rem;
   th {
@@ -1039,6 +1047,7 @@ const ServicePanelHeader = styled.div`
 `;
 const TaskTable = styled.table`
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
   font-size: 0.76rem;
   th,
