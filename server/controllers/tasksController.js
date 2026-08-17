@@ -4,6 +4,7 @@ const BillingItem = require("../models/BillingItem");
 const Notification = require("../models/Notification");
 const { ROLE_NAMES, isTopAdmin, roleLevel } = require("../config/permissions");
 const { writeAudit } = require("../utils/audit");
+const { sendTaskAssignedNotification } = require("../services/pushNotificationService");
 
 const actorName = (admin) =>
   `${admin.firstName || ""} ${admin.lastName || ""}`.trim() || admin.email;
@@ -29,6 +30,19 @@ const createTaskAssignedNotification = async (task) => {
     }.`,
     type: "task_assigned",
   });
+};
+
+const sendTaskAssignedPushSafely = async (task, eventType = "TASK_ASSIGNED") => {
+  if (!task.assignedTo) return;
+  try {
+    await sendTaskAssignedNotification(task.assignedTo._id || task.assignedTo, task, eventType);
+  } catch (error) {
+    console.warn("[task-assigned-push-failed]", {
+      taskId: String(task._id),
+      assignedTo: String(task.assignedTo._id || task.assignedTo),
+      message: error.message,
+    });
+  }
 };
 
 const createTaskStatusNotifications = async (task, actor) => {
@@ -271,6 +285,7 @@ exports.createTask = async (req, res, next) => {
     await task.populate("assignedBy", "firstName lastName email");
     await ensureBillingItemForCompletedTask(task, req.admin._id);
     await createTaskAssignedNotification(task);
+    await sendTaskAssignedPushSafely(task, "TASK_ASSIGNED");
     await writeAudit(req, "TASK_CREATED", "TASKS", `${req.admin.email} assigned ${service}`);
 
     res.status(201).json({ success: true, task: serialize(task) });
@@ -293,6 +308,8 @@ exports.reassignTask = async (req, res, next) => {
       return res.status(403).json({ success: false, message: "You can only reassign to an active allowed employee" });
     }
 
+    const previousAssigneeId = String(task.assignedTo || "");
+    const isSameAssignee = previousAssigneeId === String(assignee._id);
     task.assignedTo = assignee._id;
     task.needsReassignment = false;
     task.comments.push({
@@ -306,7 +323,10 @@ exports.reassignTask = async (req, res, next) => {
     await task.populate("client", "name companyName");
     await task.populate("assignedTo", "firstName lastName email status");
     await task.populate("assignedBy", "firstName lastName email");
-    await createTaskAssignedNotification(task);
+    if (!isSameAssignee) {
+      await createTaskAssignedNotification(task);
+      await sendTaskAssignedPushSafely(task, "TASK_REASSIGNED");
+    }
     await writeAudit(req, "TASK_REASSIGNED", "TASKS", `${req.admin.email} reassigned ${task.service}`);
 
     res.json({ success: true, task: serialize(task) });

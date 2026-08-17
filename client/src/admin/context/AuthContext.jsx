@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import api from "../api";
+import { disableTaskPushNotifications } from "../services/pushNotifications";
 
 const AuthContext = createContext(null);
 
@@ -27,6 +28,7 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     try {
+      await disableTaskPushNotifications();
       await api.post("/auth/logout", {});
     } catch {
       // Logout should still clear local state if the server is unreachable.

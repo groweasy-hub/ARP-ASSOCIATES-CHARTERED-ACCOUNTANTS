@@ -722,6 +722,7 @@ export default function Tasks() {
   const { admin } = useAuth();
   const activeFilter = searchParams.get("filter") || "all";
   const selectedEmployee = searchParams.get("employee") || "all";
+  const focusedTaskId = searchParams.get("task");
   const isSuperAdmin = admin?.role === "SUPER_ADMIN";
 
   const load = useCallback(async () => {
@@ -747,6 +748,12 @@ export default function Tasks() {
       }
     });
   }, [isSuperAdmin]);
+
+  useEffect(() => {
+    if (!focusedTaskId || loading) return;
+    const taskExists = tasks.some((task) => String(task.id) === String(focusedTaskId));
+    if (taskExists) setSelectedMobileTaskId(focusedTaskId);
+  }, [focusedTaskId, loading, tasks]);
 
   const updateTask = async (event, task) => {
     event.preventDefault();

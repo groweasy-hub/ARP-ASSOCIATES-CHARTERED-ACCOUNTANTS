@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useAuth } from "../context/AuthContext";
 import { roleLabel } from "../permissions";
+import EnableNotifications from "./EnableNotifications";
 
 const fadeIn = keyframes`from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}`;
 
@@ -527,7 +528,10 @@ export default function AdminLayout() {
             </div>
           </AdminInfo>
         </Header>
-        <Content data-page-scroll-container><Outlet /></Content>
+        <Content data-page-scroll-container>
+          <EnableNotifications />
+          <Outlet />
+        </Content>
       </Main>
       <MobileBottomNav $count={mobileLinks.length}>
         {mobileLinks.map((link) => (
