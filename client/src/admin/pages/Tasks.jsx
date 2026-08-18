@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import api from "../api";
@@ -29,10 +29,13 @@ const Grid = styled.div`
 `;
 const Card = styled.div`
   background: #fff;
-  border: 1px solid rgba(13, 34, 68, 0.07);
+  border: 1px solid
+    ${({ $focused }) => ($focused ? "rgba(2, 84, 160, 0.42)" : "rgba(13, 34, 68, 0.07)")};
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
+  box-shadow: ${({ $focused }) =>
+    $focused ? "0 8px 24px rgba(2, 84, 160, 0.14)" : "0 2px 10px rgba(11, 31, 60, 0.06)"};
   padding: 14px;
+  cursor: pointer;
 `;
 const CardTop = styled.div`
   display: flex;
@@ -594,6 +597,143 @@ const MobileTaskForm = styled.form`
   }
 `;
 
+const ActionRow = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+`;
+
+const SecondaryAction = styled.button`
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(13, 34, 68, 0.14);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0d2244;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(11, 31, 60, 0.45);
+`;
+
+const Modal = styled.form`
+  width: min(680px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(11, 31, 60, 0.22);
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(13, 34, 68, 0.1);
+
+  h3 {
+    margin: 0;
+    color: #0d2244;
+    font-size: 0.95rem;
+  }
+
+  button {
+    border: 0;
+    background: transparent;
+    color: #33425e;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1rem;
+  }
+`;
+
+const ModalBody = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px 18px 18px;
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Field = styled.label`
+  display: grid;
+  gap: 6px;
+  color: #0d2244;
+  font-size: 0.72rem;
+  font-weight: 800;
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(13, 34, 68, 0.16);
+    border-radius: 8px;
+    padding: 0 10px;
+    color: #26395d;
+    font: inherit;
+    font-size: 0.78rem;
+    outline: none;
+  }
+
+  input,
+  select {
+    height: 38px;
+  }
+
+  textarea {
+    min-height: 82px;
+    padding-top: 9px;
+    resize: vertical;
+  }
+`;
+
+const FullField = styled(Field)`
+  grid-column: 1 / -1;
+`;
+
+const ModalActions = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+`;
+
+const PrimaryAction = styled.button`
+  height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2c649c, #0254a0);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+`;
+
 const statusOptions = [
   "In Progress",
   "Pending",
@@ -712,13 +852,31 @@ const formatTaskDate = (value) => {
   });
 };
 
+const formatDateInput = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+};
+
+const recurrenceOptions = [
+  { value: "NONE", label: "Just this month" },
+  { value: "MONTHLY", label: "Repeat every month" },
+  { value: "QUARTERLY", label: "Quarterly repeat" },
+  { value: "YEARLY", label: "Yearly repeat" },
+];
+
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updates, setUpdates] = useState({});
   const [selectedMobileTaskId, setSelectedMobileTaskId] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [savingEdit, setSavingEdit] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const taskRefs = useRef({});
   const { admin } = useAuth();
   const activeFilter = searchParams.get("filter") || "all";
   const selectedEmployee = searchParams.get("employee") || "all";
@@ -737,7 +895,6 @@ export default function Tasks() {
   }, [load]);
 
   useEffect(() => {
-    if (!isSuperAdmin) return;
     api.get("/users").then((res) => {
       if (res.success) {
         setEmployees(
@@ -747,7 +904,35 @@ export default function Tasks() {
         );
       }
     });
-  }, [isSuperAdmin]);
+  }, []);
+
+  const openEditTask = (task) => {
+    setEditingTask(task);
+    setEditForm({
+      assignedTo: task.assignedTo?.id || "",
+      dueDate: formatDateInput(task.dueDate),
+      workStatus: task.workStatus || "Pending",
+      workPreference: task.workPreference || "Medium",
+      recurrenceFrequency: task.recurrenceFrequency || "NONE",
+      description: task.description || "",
+    });
+  };
+
+  const submitTaskEdit = async (event) => {
+    event.preventDefault();
+    if (!editingTask) return;
+    setSavingEdit(true);
+    const res = await api.patch(`/tasks/${editingTask.id}`, editForm);
+    setSavingEdit(false);
+    if (res.success) {
+      toast.success("Task updated");
+      setEditingTask(null);
+      setEditForm({});
+      load();
+    } else {
+      toast.error(res.message || "Unable to edit task");
+    }
+  };
 
   useEffect(() => {
     if (!focusedTaskId || loading) return;
@@ -821,6 +1006,14 @@ export default function Tasks() {
     }
     return tasks;
   }, [activeFilter, isSuperAdmin, selectedEmployee, tasks]);
+
+  useEffect(() => {
+    if (!focusedTaskId || loading) return;
+    const target = taskRefs.current[focusedTaskId];
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [filteredTasks, focusedTaskId, loading]);
 
   const selectedFilter = taskFilters.find((item) => item.key === activeFilter);
   const selectFilter = (key) => {
@@ -911,7 +1104,14 @@ export default function Tasks() {
       ) : (
         <Grid>
           {filteredTasks.map((task) => (
-            <Card key={task.id}>
+            <Card
+              key={task.id}
+              ref={(element) => {
+                if (element) taskRefs.current[task.id] = element;
+              }}
+              $focused={String(task.id) === String(focusedTaskId)}
+              onClick={() => openEditTask(task)}
+            >
               <CardTop>
                 <div>
                   <h3>{task.service}</h3>
@@ -947,7 +1147,10 @@ export default function Tasks() {
                 <strong>Description</strong>
                 {task.description || "-"}
               </Description>
-              <Form onSubmit={(event) => updateTask(event, task)}>
+              <Form
+                onClick={(event) => event.stopPropagation()}
+                onSubmit={(event) => updateTask(event, task)}
+              >
                 <select
                   value={updates[task.id]?.workStatus || task.workStatus}
                   onChange={(e) =>
@@ -1093,6 +1296,12 @@ export default function Tasks() {
                   {task.description || "-"}
                 </MobileDescriptionBox>
 
+                <ActionRow>
+                  <SecondaryAction type="button" onClick={() => openEditTask(task)}>
+                    Edit Task
+                  </SecondaryAction>
+                </ActionRow>
+
                 <MobileTaskForm onSubmit={(event) => updateTask(event, task)}>
                   <label>Update Status</label>
                   <select
@@ -1178,6 +1387,96 @@ export default function Tasks() {
         )}
       </MobileCurrentSection>
     </MobileTasks>
+
+    {editingTask && (
+      <ModalOverlay onClick={() => setEditingTask(null)}>
+        <Modal onClick={(event) => event.stopPropagation()} onSubmit={submitTaskEdit}>
+          <ModalHeader>
+            <h3>Edit {editingTask.service}</h3>
+            <button type="button" onClick={() => setEditingTask(null)}>
+              x
+            </button>
+          </ModalHeader>
+          <ModalBody>
+            <Field>
+              Assign
+              <select
+                required
+                value={editForm.assignedTo || ""}
+                onChange={(event) => setEditForm({ ...editForm, assignedTo: event.target.value })}
+              >
+                <option value="">Select employee</option>
+                {employees.map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.name || employee.email}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field>
+              Due Date
+              <input
+                required
+                type="date"
+                value={editForm.dueDate || ""}
+                onChange={(event) => setEditForm({ ...editForm, dueDate: event.target.value })}
+              />
+            </Field>
+            <Field>
+              Work Status
+              <select
+                value={editForm.workStatus || "Pending"}
+                onChange={(event) => setEditForm({ ...editForm, workStatus: event.target.value })}
+              >
+                {statusOptions.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </Field>
+            <Field>
+              Work Preference
+              <select
+                value={editForm.workPreference || "Medium"}
+                onChange={(event) => setEditForm({ ...editForm, workPreference: event.target.value })}
+              >
+                {["Low", "Medium", "High", "Urgent"].map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </Field>
+            <FullField>
+              Repeat
+              <select
+                value={editForm.recurrenceFrequency || "NONE"}
+                onChange={(event) => setEditForm({ ...editForm, recurrenceFrequency: event.target.value })}
+              >
+                {recurrenceOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </FullField>
+            <FullField>
+              Description
+              <textarea
+                required
+                value={editForm.description || ""}
+                onChange={(event) => setEditForm({ ...editForm, description: event.target.value })}
+              />
+            </FullField>
+            <ModalActions>
+              <SecondaryAction type="button" onClick={() => setEditingTask(null)}>
+                Cancel
+              </SecondaryAction>
+              <PrimaryAction disabled={savingEdit} type="submit">
+                {savingEdit ? "Saving..." : "Save Task"}
+              </PrimaryAction>
+            </ModalActions>
+          </ModalBody>
+        </Modal>
+      </ModalOverlay>
+    )}
     </>
   );
 }

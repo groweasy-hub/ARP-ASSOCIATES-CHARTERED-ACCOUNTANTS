@@ -30,6 +30,11 @@ const taskSchema = new mongoose.Schema(
       default: "Medium",
     },
     recurringMonthly: { type: Boolean, default: false },
+    recurrenceFrequency: {
+      type: String,
+      enum: ["NONE", "MONTHLY", "QUARTERLY", "YEARLY"],
+      default: "NONE",
+    },
     recurrenceRoot: { type: mongoose.Schema.Types.ObjectId, ref: "Task", default: null },
     recurrenceMonthKey: { type: String, trim: true, default: "" },
     needsReassignment: { type: Boolean, default: false },

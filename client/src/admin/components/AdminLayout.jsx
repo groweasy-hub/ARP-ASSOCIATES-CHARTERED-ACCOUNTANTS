@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
+import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { roleLabel } from "../permissions";
 import EnableNotifications from "./EnableNotifications";
@@ -61,6 +62,7 @@ const Nav = styled.nav`
 `;
 
 const NavItem = styled(NavLink)`
+  position: relative;
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing[8]};
@@ -76,6 +78,26 @@ const NavItem = styled(NavLink)`
   &:hover { background: rgba(255,255,255,0.08); color: #fff; }
   &.active { background: linear-gradient(135deg, ${({ theme }) => theme.colors.secondary}, ${({ theme }) => theme.colors.primary}); color: #fff; box-shadow: ${({ theme }) => theme.shadows.md}; }
   svg { width: 16px; height: 16px; flex-shrink: 0; }
+`;
+
+const NavLabel = styled.span`
+  min-width: 0;
+  flex: 1;
+`;
+
+const CountBadge = styled.span`
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
 `;
 
 const SidebarFooter = styled.div`
@@ -343,6 +365,7 @@ const MobileBottomNav = styled.nav`
 `;
 
 const BottomNavItem = styled(NavLink)`
+  position: relative;
   display: grid;
   place-items: center;
   gap: 4px;
@@ -369,6 +392,22 @@ const BottomNavItem = styled(NavLink)`
     color: #ffffff;
     background: linear-gradient(135deg, ${({ theme }) => theme.colors.secondary}, ${({ theme }) => theme.colors.primary});
     box-shadow: ${({ theme }) => theme.shadows.md};
+  }
+`;
+
+const BottomIconWrap = styled.span`
+  position: relative;
+  display: inline-flex;
+
+  ${CountBadge} {
+    position: absolute;
+    top: -7px;
+    right: -9px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 0.56rem;
+    border: 2px solid #ffffff;
   }
 `;
 
@@ -423,11 +462,50 @@ const pageTitle = (pathname) => {
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [navCounts, setNavCounts] = useState({ leads: 0, tasks: 0 });
   const { admin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const adminIdentity = admin?.id || admin?._id || admin?.email || "";
   const mobileLinks = mobileLinksByRole(admin?.role);
   const touchStartRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const loadCounts = async () => {
+      try {
+        const [leadStats, taskRes] = await Promise.allSettled([
+          api.get("/leads/stats"),
+          api.get("/tasks"),
+        ]);
+        if (!mounted) return;
+        const leads =
+          leadStats.status === "fulfilled" && leadStats.value?.success
+            ? Number(leadStats.value.stats?.pending || 0)
+            : 0;
+        const tasks =
+          taskRes.status === "fulfilled" && taskRes.value?.success
+            ? (taskRes.value.tasks || []).filter((task) => task.workStatus !== "Completed").length
+            : 0;
+        setNavCounts({ leads, tasks });
+      } catch {
+        if (mounted) setNavCounts({ leads: 0, tasks: 0 });
+      }
+    };
+
+    if (adminIdentity) {
+      loadCounts();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [adminIdentity, location.pathname]);
+
+  const badgeFor = (path) => {
+    if (path === "/admin/leads") return navCounts.leads;
+    if (path === "/admin/tasks") return navCounts.tasks;
+    return 0;
+  };
 
   const handleLogout = () => { logout(); navigate("/admin/login"); };
   const handleTouchStart = (event) => {
@@ -473,7 +551,9 @@ export default function AdminLayout() {
         <Nav>
           {navLinks.map((l) => (
             <NavItem key={l.to} to={l.to} onClick={() => setSidebarOpen(false)}>
-              {l.icon}{l.label}
+              {l.icon}
+              <NavLabel>{l.label}</NavLabel>
+              {badgeFor(l.to) > 0 && <CountBadge>{badgeFor(l.to)}</CountBadge>}
             </NavItem>
           ))}
         </Nav>
@@ -536,7 +616,10 @@ export default function AdminLayout() {
       <MobileBottomNav $count={mobileLinks.length}>
         {mobileLinks.map((link) => (
           <BottomNavItem key={link.to} to={link.to}>
-            {link.icon}
+            <BottomIconWrap>
+              {link.icon}
+              {badgeFor(link.to) > 0 && <CountBadge>{badgeFor(link.to)}</CountBadge>}
+            </BottomIconWrap>
             <span>{link.label === "Dashboard" ? "Home" : link.label === "Client Management" ? "Clients" : link.label}</span>
           </BottomNavItem>
         ))}

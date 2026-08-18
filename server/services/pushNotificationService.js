@@ -66,6 +66,8 @@ const sendTaskAssignedNotification = async (employeeId, task, eventType = "TASK_
   const details = [due ? `Due ${due}` : "", priority].filter(Boolean).join(" | ");
   const service = task.service || "Task";
   const client = safeClientName(task.client);
+  const assigneeId = String(task.assignedTo?._id || task.assignedTo || employeeId);
+  const taskUrl = `/admin/tasks?filter=assigned&employee=${encodeURIComponent(assigneeId)}&task=${encodeURIComponent(taskId)}`;
 
   return sendPushToUser(employeeId, {
     title: eventType === "TASK_REASSIGNED" ? "Task Reassigned" : "New Task Assigned",
@@ -73,10 +75,11 @@ const sendTaskAssignedNotification = async (employeeId, task, eventType = "TASK_
     icon: "/logo192.png",
     badge: "/logo192.png",
     tag: `task-${eventType.toLowerCase()}-${taskId}`,
+    url: taskUrl,
     data: {
       type: eventType,
       taskId,
-      url: `/admin/tasks?task=${encodeURIComponent(taskId)}`,
+      url: taskUrl,
       assignedBy: safeActorName(task.assignedBy),
     },
   });

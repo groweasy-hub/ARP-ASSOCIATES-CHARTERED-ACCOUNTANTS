@@ -14,10 +14,38 @@ const clientName = (client) => client?.companyName || client?.name || "Client";
 const monthKey = (date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 
-const monthlyDueDate = (sourceDate, year, monthIndex) => {
+const recurrencePeriodKey = (date, frequency) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  if (frequency === "YEARLY") return `${year}`;
+  if (frequency === "QUARTERLY") return `${year}-Q${Math.floor(month / 3) + 1}`;
+  return monthKey(date);
+};
+
+const recurrenceIntervalMonths = (frequency) =>
+  ({ MONTHLY: 1, QUARTERLY: 3, YEARLY: 12 })[frequency] || 0;
+
+const dateKey = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+const addDays = (date, days) => {
+  const copy = new Date(date);
+  copy.setHours(0, 0, 0, 0);
+  copy.setDate(copy.getDate() + days);
+  return copy;
+};
+
+const nextRecurringDueDate = (sourceDate, frequency, now) => {
+  const intervalMonths = recurrenceIntervalMonths(frequency);
+  if (!intervalMonths) return null;
+  const source = new Date(sourceDate);
+  const target = addDays(now, 2);
+  const monthsElapsed = (target.getFullYear() - source.getFullYear()) * 12 + target.getMonth() - source.getMonth();
+  if (monthsElapsed < intervalMonths || monthsElapsed % intervalMonths !== 0) return null;
   const day = new Date(sourceDate).getDate();
-  const lastDay = new Date(year, monthIndex + 1, 0).getDate();
-  return new Date(year, monthIndex, Math.min(day, lastDay));
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  const dueDate = new Date(target.getFullYear(), target.getMonth(), Math.min(day, lastDay));
+  return dateKey(dueDate) === dateKey(target) ? dueDate : null;
 };
 
 const createTaskAssignedNotification = async (task) => {
@@ -107,29 +135,41 @@ const canAssignTaskTo = (actor, target) => {
   return false;
 };
 
-const ensureMonthlyRecurringTasks = async () => {
+const normalizeRecurrenceFrequency = (value, recurringMonthly = false) => {
+  if (["MONTHLY", "QUARTERLY", "YEARLY"].includes(value)) return value;
+  return recurringMonthly ? "MONTHLY" : "NONE";
+};
+
+const ensureRecurringTasks = async () => {
   const now = new Date();
-  const currentMonthKey = monthKey(now);
   const templates = await Task.find({
-    recurringMonthly: true,
-    $or: [{ recurrenceRoot: null }, { recurrenceRoot: { $exists: false } }],
+    $and: [
+      {
+        $or: [
+          { recurrenceFrequency: { $in: ["MONTHLY", "QUARTERLY", "YEARLY"] } },
+          { recurringMonthly: true },
+        ],
+      },
+      { $or: [{ recurrenceRoot: null }, { recurrenceRoot: { $exists: false } }] },
+    ],
   }).populate("assignedTo", "status");
 
   await Promise.all(
     templates.map(async (template) => {
+      const frequency = normalizeRecurrenceFrequency(template.recurrenceFrequency, template.recurringMonthly);
       const rootId = template.recurrenceRoot || template._id;
-      const templateMonth = monthKey(new Date(template.dueDate || template.createdAt));
-      if (templateMonth === currentMonthKey) return;
+      const dueDate = nextRecurringDueDate(template.dueDate || template.createdAt, frequency, now);
+      if (!dueDate) return;
+      const periodKey = recurrencePeriodKey(dueDate, frequency);
 
       const exists = await Task.exists({
         recurrenceRoot: rootId,
-        recurrenceMonthKey: currentMonthKey,
+        recurrenceMonthKey: periodKey,
       });
       if (exists) return;
 
-      const dueDate = monthlyDueDate(template.dueDate || template.createdAt, now.getFullYear(), now.getMonth());
       const assigneeInactive = template.assignedTo?.status !== "Active";
-      await Task.create({
+      const recurringTask = await Task.create({
         client: template.client,
         service: template.service,
         description: template.description,
@@ -139,21 +179,27 @@ const ensureMonthlyRecurringTasks = async () => {
         assignedBy: template.assignedBy,
         workStatus: "Pending",
         workPreference: template.workPreference || "Medium",
-        recurringMonthly: true,
+        recurringMonthly: frequency === "MONTHLY",
+        recurrenceFrequency: frequency,
         recurrenceRoot: rootId,
-        recurrenceMonthKey: currentMonthKey,
+        recurrenceMonthKey: periodKey,
         needsReassignment: assigneeInactive,
         comments: [
           {
             text: assigneeInactive
-              ? "Monthly recurring task created. Original assignee is inactive; reassign this task."
-              : "Monthly recurring task created automatically.",
+              ? "Recurring task created. Original assignee is inactive; reassign this task."
+              : "Recurring task created automatically.",
             status: "Pending",
             author: template.assignedBy,
             authorName: "System",
           },
         ],
       });
+      await recurringTask.populate("client", "name companyName");
+      await recurringTask.populate("assignedTo", "firstName lastName email status");
+      await recurringTask.populate("assignedBy", "firstName lastName email");
+      await createTaskAssignedNotification(recurringTask);
+      await sendTaskAssignedPushSafely(recurringTask, "TASK_ASSIGNED");
     })
   );
 };
@@ -165,8 +211,8 @@ exports.startTaskScheduler = () => {
   recurringTaskSchedulerStarted = true;
 
   const run = () => {
-    ensureMonthlyRecurringTasks().catch((error) => {
-      console.error("Monthly recurring task scheduler failed:", error.message);
+    ensureRecurringTasks().catch((error) => {
+      console.error("Recurring task scheduler failed:", error.message);
     });
   };
 
@@ -204,6 +250,7 @@ const serialize = (task) => ({
   workStatus: task.workStatus,
   workPreference: task.workPreference,
   recurringMonthly: Boolean(task.recurringMonthly),
+  recurrenceFrequency: normalizeRecurrenceFrequency(task.recurrenceFrequency, task.recurringMonthly),
   needsReassignment: Boolean(task.needsReassignment || task.assignedTo?.status !== "Active"),
   comments: task.comments || [],
   createdAt: task.createdAt,
@@ -212,7 +259,7 @@ const serialize = (task) => ({
 
 exports.listTasks = async (req, res, next) => {
   try {
-    await ensureMonthlyRecurringTasks();
+    await ensureRecurringTasks();
 
     const filter = {};
     if (req.query.client) filter.client = req.query.client;
@@ -241,7 +288,7 @@ exports.listTasks = async (req, res, next) => {
 
 exports.createTask = async (req, res, next) => {
   try {
-    const { client, service, description, dueDate, assignedTo, workStatus, workPreference, comment, taskType, recurringMonthly } = req.body;
+    const { client, service, description, dueDate, assignedTo, workStatus, workPreference, comment, taskType, recurringMonthly, recurrenceFrequency } = req.body;
     if (!client || !service || !description || !dueDate || !assignedTo) {
       return res.status(400).json({
         success: false,
@@ -263,6 +310,7 @@ exports.createTask = async (req, res, next) => {
       });
     }
 
+    const normalizedRecurrence = normalizeRecurrenceFrequency(recurrenceFrequency, recurringMonthly);
     const task = await Task.create({
       client,
       service,
@@ -273,7 +321,8 @@ exports.createTask = async (req, res, next) => {
       taskType: taskType || "Compliance",
       workStatus: workStatus || "Pending",
       workPreference: workPreference || "Medium",
-      recurringMonthly: Boolean(recurringMonthly),
+      recurringMonthly: normalizedRecurrence === "MONTHLY",
+      recurrenceFrequency: normalizedRecurrence,
       comments: comment
         ? [
             {
@@ -334,6 +383,63 @@ exports.reassignTask = async (req, res, next) => {
       await sendTaskAssignedPushSafely(task, "TASK_REASSIGNED");
     }
     await writeAudit(req, "TASK_REASSIGNED", "TASKS", `${req.admin.email} reassigned ${task.service}`);
+
+    res.json({ success: true, task: serialize(task) });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateTaskDetails = async (req, res, next) => {
+  try {
+    const { assignedTo, dueDate, workStatus, workPreference, description, recurrenceFrequency } = req.body;
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ success: false, message: "Task not found" });
+
+    const canEditTask =
+      isTopAdmin(req.admin.role) ||
+      String(task.assignedBy || "") === String(req.admin._id);
+    if (!canEditTask) {
+      return res.status(403).json({ success: false, message: "You cannot edit this task" });
+    }
+
+    let assigneeChanged = false;
+    if (assignedTo && String(assignedTo) !== String(task.assignedTo || "")) {
+      const assignee = await Admin.findById(assignedTo);
+      if (!assignee) return res.status(404).json({ success: false, message: "Employee not found" });
+      if (!canAssignTaskTo(req.admin, assignee)) {
+        return res.status(403).json({ success: false, message: "You can only assign to an active allowed employee" });
+      }
+      task.assignedTo = assignee._id;
+      task.needsReassignment = false;
+      assigneeChanged = true;
+      task.comments.push({
+        text: `Task assigned to ${actorName(assignee)}`,
+        status: task.workStatus,
+        author: req.admin._id,
+        authorName: actorName(req.admin),
+      });
+    }
+
+    if (dueDate) task.dueDate = dueDate;
+    if (workStatus) task.workStatus = workStatus;
+    if (workPreference) task.workPreference = workPreference;
+    if (description !== undefined) task.description = description;
+    if (recurrenceFrequency !== undefined) {
+      const normalizedRecurrence = normalizeRecurrenceFrequency(recurrenceFrequency, false);
+      task.recurrenceFrequency = normalizedRecurrence;
+      task.recurringMonthly = normalizedRecurrence === "MONTHLY";
+    }
+
+    await task.save();
+    await task.populate("client", "name companyName");
+    await task.populate("assignedTo", "firstName lastName email status");
+    await task.populate("assignedBy", "firstName lastName email");
+    if (assigneeChanged) {
+      await createTaskAssignedNotification(task);
+      await sendTaskAssignedPushSafely(task, "TASK_REASSIGNED");
+    }
+    await writeAudit(req, "TASK_EDITED", "TASKS", `${req.admin.email} edited ${task.service}`);
 
     res.json({ success: true, task: serialize(task) });
   } catch (err) {

@@ -1,6 +1,7 @@
 import api from "../api";
 
 const SERVICE_WORKER_URL = "/service-worker.js";
+const SERVICE_WORKER_ACTIVE_TIMEOUT_MS = 10000;
 const API_ROOT = (process.env.REACT_APP_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
 const BASE = API_ROOT.endsWith("/api") ? API_ROOT : `${API_ROOT}/api`;
 
@@ -29,6 +30,31 @@ const getRegistration = async () => {
   return navigator.serviceWorker.register(SERVICE_WORKER_URL, { scope: "/" });
 };
 
+const waitForActiveRegistration = async (registration) => {
+  if (registration.active) return registration;
+
+  const worker = registration.installing || registration.waiting;
+  const workerActivated = worker
+    ? new Promise((resolve) => {
+        worker.addEventListener(
+          "statechange",
+          () => {
+            if (worker.state === "activated") resolve();
+          },
+          { once: false }
+        );
+      })
+    : Promise.resolve();
+
+  const timeout = new Promise((_, reject) => {
+    window.setTimeout(() => reject(new Error("Service worker activation timed out.")), SERVICE_WORKER_ACTIVE_TIMEOUT_MS);
+  });
+
+  await Promise.race([navigator.serviceWorker.ready, workerActivated, timeout]);
+  const readyRegistration = await navigator.serviceWorker.ready;
+  return readyRegistration.active ? readyRegistration : registration;
+};
+
 export const enableTaskPushNotifications = async () => {
   const support = getPushSupport();
   if (!support.supported) {
@@ -45,7 +71,7 @@ export const enableTaskPushNotifications = async () => {
     return { success: false, reason: permission };
   }
 
-  const registration = await getRegistration();
+  const registration = await waitForActiveRegistration(await getRegistration());
   const existing = await registration.pushManager.getSubscription();
   const subscription =
     existing ||

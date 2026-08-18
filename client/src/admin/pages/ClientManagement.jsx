@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -30,7 +30,6 @@ import {
   faTriangleExclamation,
   faUserCheck,
   faUserTie,
-  faUserPlus,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import api from "../api";
@@ -85,6 +84,12 @@ const Toolbar = styled.div`
   flex-wrap: wrap;
   min-width: 0;
   margin-bottom: 12px;
+`;
+const ActiveFilterNote = styled.div`
+  margin: -4px 0 12px;
+  color: #33425e;
+  font-size: 0.72rem;
+  font-weight: 700;
 `;
 const Input = styled.input`
   width: 100%;
@@ -155,14 +160,21 @@ const SecondaryBtn = styled.button`
 `;
 const TableWrap = styled.div`
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
-  border: 1px solid rgba(13, 34, 68, 0.07);
+  border-radius: 12px;
+  box-shadow: 0 18px 45px rgba(11, 31, 60, 0.08);
+  border: 1px solid rgba(13, 34, 68, 0.08);
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+`;
+const ClientListTableWrap = styled(TableWrap)`
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const DesktopClientsView = styled.div`
   @media (max-width: 768px) {
@@ -258,6 +270,13 @@ const MobileStatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
+`;
+const ClientSummaryGrid = styled(MobileStatsGrid)`
+  margin-bottom: 14px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0;
+  }
 `;
 const MobileStatCard = styled.div`
   min-height: 100px;
@@ -386,6 +405,38 @@ const MobileClientMeta = styled.div`
 const MobileAddress = styled(MobileClientMeta)`
   grid-column: 1 / -1;
 `;
+const MobileBillingMiniGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(13, 34, 68, 0.08);
+`;
+const MobileBillingMini = styled.div`
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding: 8px 6px;
+  border: 1px solid rgba(13, 34, 68, 0.08);
+  border-radius: 8px;
+  background: #fbfdff;
+  text-align: center;
+
+  span {
+    color: #64748b;
+    font-size: 0.5rem;
+    font-weight: 800;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: ${({ $pending }) => ($pending ? "#f97316" : "#071e49")};
+    font-size: 0.66rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+`;
 const MobileCardActions = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -413,27 +464,28 @@ const MobileOutlineBtn = styled.button`
 `;
 const Table = styled.table`
   width: 100%;
-  min-width: 780px;
+  min-width: 1540px;
   border-collapse: collapse;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   th {
-    padding: 9px 11px;
-    text-align: left;
-    color: #33425e;
-    font-weight: 700;
-    font-size: 0.64rem;
+    padding: 14px 16px;
+    text-align: center;
+    color: #26395d;
+    font-weight: 800;
+    font-size: 0.58rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    background: #f6fbff;
-    border-bottom: 1px solid rgba(13, 34, 68, 0.08);
+    letter-spacing: 0;
+    background: #fbfdff;
+    border-bottom: 1px solid rgba(13, 34, 68, 0.09);
     white-space: nowrap;
   }
   td {
-    padding: 9px 11px;
+    padding: 13px 16px;
     color: #0d2244;
-    border-bottom: 1px solid rgba(13, 34, 68, 0.06);
+    border-bottom: 1px solid rgba(13, 34, 68, 0.08);
     vertical-align: middle;
     white-space: nowrap;
+    font-weight: 600;
   }
   tr:last-child td {
     border-bottom: 0;
@@ -449,12 +501,64 @@ const ClickableRow = styled.tr`
     outline-offset: -2px;
   }
 `;
+const DesktopClientCell = styled.div`
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+`;
+const DesktopClientAvatar = styled.span`
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: ${({ $bg }) => $bg || "#0d2244"};
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 900;
+`;
+const DesktopClientName = styled.span`
+  display: block;
+  max-width: 620px;
+  overflow: hidden;
+  color: #0d2244;
+  font-weight: 900;
+  white-space: normal;
+`;
+const DesktopMutedCell = styled.span`
+  display: block;
+  max-width: ${({ $width }) => $width || "180px"};
+  overflow: hidden;
+  color: #26395d;
+  text-overflow: ellipsis;
+`;
+const DesktopEmail = styled(DesktopMutedCell)`
+  color: #0b66d8;
+`;
+const DesktopPayment = styled.span`
+  display: block;
+  text-align: center;
+  color: ${({ $pending }) => ($pending ? "#f97316" : "#15803d")};
+  font-size: 0.76rem;
+  font-weight: 900;
+`;
+const DesktopCountValue = styled.span`
+  display: block;
+  text-align: center;
+  color: #0d2244;
+  font-size: 0.76rem;
+  font-weight: 900;
+`;
 const Badge = styled.span`
   display: inline-flex;
-  padding: 3px 8px;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
   border-radius: 999px;
-  font-size: 0.66rem;
-  font-weight: 700;
+  font-size: 0.58rem;
+  font-weight: 900;
   background: ${({ $status }) =>
     ({
       Active: "#ecfdf3",
@@ -477,6 +581,14 @@ const Badge = styled.span`
       "In Progress": "#0254a0",
       "Waiting for Client": "#92400e",
     })[$status] || "#374151"};
+
+  &::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: currentColor;
+  }
 `;
 const Empty = styled.div`
   padding: 38px 18px;
@@ -1252,7 +1364,7 @@ const initialTaskForm = {
   workStatus: "Pending",
   workPreference: "Medium",
   comment: "",
-  recurringMonthly: false,
+  recurrenceFrequency: "NONE",
 };
 
 const initialInvoiceForm = {
@@ -1304,15 +1416,16 @@ const formatCurrency = (value) =>
     currency: "INR",
     maximumFractionDigits: 0,
   });
+const clientInitials = (client) =>
+  (client.companyName || client.name || "C")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "C";
+const avatarColors = ["#0d2244", "#0058d8", "#f97316", "#087443", "#7c3aed"];
 const normalizeText = (value) => String(value || "").trim().toLowerCase();
 const normalizeServiceKey = (value) => normalizeText(value).replace(/[^a-z0-9]/g, "");
-const isWithinLastDays = (value, days) => {
-  if (!value) return false;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return false;
-  return Date.now() - date.getTime() <= days * 24 * 60 * 60 * 1000;
-};
-
 const taskMetricRows = (task) => {
   const lastComment = task.comments?.length ? task.comments[task.comments.length - 1] : null;
   return [
@@ -1440,6 +1553,7 @@ function ClientDetail({ canEditClient }) {
     setSavingTask(true);
     const res = await api.post("/tasks", {
       ...taskForm,
+      recurringMonthly: taskForm.recurrenceFrequency === "MONTHLY",
       client: id,
       service: selectedService,
       taskType: selectedTaskType,
@@ -3021,17 +3135,18 @@ function ClientDetail({ canEditClient }) {
                 </select>
               </Field>
               <FullField>
-                <label style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 800 }}>
-                  <input
-                    checked={taskForm.recurringMonthly}
-                    type="checkbox"
-                    onChange={(e) =>
-                      setTaskForm({ ...taskForm, recurringMonthly: e.target.checked })
-                    }
-                    style={{ width: 16, height: 16 }}
-                  />
-                  Add this task automatically every month
-                </label>
+                Repeat
+                <select
+                  value={taskForm.recurrenceFrequency}
+                  onChange={(e) =>
+                    setTaskForm({ ...taskForm, recurrenceFrequency: e.target.value })
+                  }
+                >
+                  <option value="NONE">Just this month</option>
+                  <option value="MONTHLY">Repeat every month</option>
+                  <option value="QUARTERLY">Quarterly repeat</option>
+                  <option value="YEARLY">Yearly repeat</option>
+                </select>
               </FullField>
               <FullField>
                 Description
@@ -3118,6 +3233,7 @@ export default function ClientManagement() {
   const { admin } = useAuth();
   const navigate = useNavigate();
   const { id: clientId } = useParams();
+  const [searchParams] = useSearchParams();
   const canCreateClient =
     ["SUPER_ADMIN", "ADMIN"].includes(admin?.role) ||
     hasPermission(admin, "clients.create");
@@ -3126,6 +3242,12 @@ export default function ClientManagement() {
     hasPermission(admin, "clients.edit");
   const [clients, setClients] = useState([]);
   const [total, setTotal] = useState(0);
+  const [summary, setSummary] = useState({
+    totalClients: 0,
+    invoicesRaisedCount: 0,
+    pendingInvoicesCount: 0,
+    paymentPendingAmount: 0,
+  });
   const [pages, setPages] = useState(1);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -3135,20 +3257,28 @@ export default function ClientManagement() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
+  const billingFilter = searchParams.get("billing") || "";
 
   const load = useCallback(async () => {
     setLoading(true);
     const q = new URLSearchParams({ page, limit: 10 });
     if (search) q.set("search", search);
     if (status !== "All") q.set("status", status);
+    if (billingFilter) q.set("billing", billingFilter);
     const res = await api.get(`/clients?${q}`);
     if (res.success) {
       setClients(res.clients);
       setTotal(res.total);
       setPages(res.pages);
+      setSummary({
+        totalClients: res.summary?.totalClients ?? res.total ?? 0,
+        invoicesRaisedCount: res.summary?.invoicesRaisedCount ?? 0,
+        pendingInvoicesCount: res.summary?.pendingInvoicesCount ?? 0,
+        paymentPendingAmount: res.summary?.paymentPendingAmount ?? 0,
+      });
     }
     setLoading(false);
-  }, [page, search, status]);
+  }, [billingFilter, page, search, status]);
 
   useEffect(() => {
     load();
@@ -3186,36 +3316,41 @@ export default function ClientManagement() {
     return <ClientDetail canEditClient={canEditClient} />;
   }
 
-  const mobileStats = [
+  const clientStats = [
     {
       label: "Total Clients",
-      value: total || clients.length,
+      value: summary.totalClients || total || clients.length,
       icon: faUsers,
       bg: "#eaf3fb",
       color: "#0254a0",
     },
     {
-      label: "Active",
-      value: clients.filter((client) => client.status === "Active").length,
-      icon: faUserCheck,
-      bg: "#dcfce7",
-      color: "#15803d",
+      label: "Invoices Raised",
+      value: summary.invoicesRaisedCount || 0,
+      icon: faFileInvoiceDollar,
+      bg: "#ecfdf3",
+      color: "#087443",
     },
     {
-      label: "GST Registered",
-      value: clients.filter((client) => client.gstin).length,
+      label: "Pending Invoices",
+      value: summary.pendingInvoicesCount || 0,
       icon: faFileInvoice,
-      bg: "#f3e8ff",
-      color: "#7c3aed",
+      bg: "#fffbeb",
+      color: "#b45309",
     },
     {
-      label: "New Clients vs last 7 days",
-      value: clients.filter((client) => isWithinLastDays(client.createdAt, 7)).length,
-      icon: faUserPlus,
-      bg: "#ffedd5",
-      color: "#ea580c",
+      label: "Payment Pending",
+      value: formatCurrency(summary.paymentPendingAmount || 0),
+      icon: faMoneyBillWave,
+      bg: "#fff7ed",
+      color: "#f97316",
     },
   ];
+  const billingFilterLabels = {
+    INVOICE_RAISED: "Showing clients with invoices raised",
+    PAID: "Showing clients with paid invoices",
+    PAYMENT_PENDING: "Showing clients with pending invoice balances",
+  };
 
   return (
     <div>
@@ -3223,6 +3358,9 @@ export default function ClientManagement() {
         <MobileClientsHeader>
           <h2>Clients Overview</h2>
         </MobileClientsHeader>
+        {billingFilterLabels[billingFilter] && (
+          <ActiveFilterNote>{billingFilterLabels[billingFilter]}</ActiveFilterNote>
+        )}
         <MobileSearchBox>
           <FontAwesomeIcon icon={faSearch} />
           <input
@@ -3256,8 +3394,8 @@ export default function ClientManagement() {
             </MobileAddBtn>
           )}
         </MobileControlRow>
-        <MobileStatsGrid>
-          {mobileStats.map((item) => (
+        <ClientSummaryGrid>
+          {clientStats.map((item) => (
             <MobileStatCard key={item.label}>
               <MobileStatIcon $bg={item.bg} $color={item.color}>
                 <FontAwesomeIcon icon={item.icon} />
@@ -3266,7 +3404,7 @@ export default function ClientManagement() {
               <span>{item.label}</span>
             </MobileStatCard>
           ))}
-        </MobileStatsGrid>
+        </ClientSummaryGrid>
         {loading ? (
           <MobileClientList>
             {Array.from({ length: 3 }).map((_, index) => (
@@ -3333,6 +3471,20 @@ export default function ClientManagement() {
                       <span>{client.address || "-"}</span>
                     </MobileAddress>
                   </MobileClientDetails>
+                  <MobileBillingMiniGrid>
+                    <MobileBillingMini>
+                      <span>Invoices Raised</span>
+                      <strong>{client.invoicesRaisedCount || 0}</strong>
+                    </MobileBillingMini>
+                    <MobileBillingMini $pending={Number(client.pendingInvoicesCount || 0) > 0}>
+                      <span>Pending Invoices</span>
+                      <strong>{client.pendingInvoicesCount || 0}</strong>
+                    </MobileBillingMini>
+                    <MobileBillingMini $pending={Number(client.paymentPendingAmount || 0) > 0}>
+                      <span>Payment Pending</span>
+                      <strong>{formatCurrency(client.paymentPendingAmount || 0)}</strong>
+                    </MobileBillingMini>
+                  </MobileBillingMiniGrid>
                   <MobileCardActions>
                     <MobileOutlineBtn
                       type="button"
@@ -3376,6 +3528,18 @@ export default function ClientManagement() {
           )}
         </PageHeader>
 
+        <ClientSummaryGrid>
+          {clientStats.map((item) => (
+            <MobileStatCard key={item.label}>
+              <MobileStatIcon $bg={item.bg} $color={item.color}>
+                <FontAwesomeIcon icon={item.icon} />
+              </MobileStatIcon>
+              <strong>{item.value}</strong>
+              <span>{item.label}</span>
+            </MobileStatCard>
+          ))}
+        </ClientSummaryGrid>
+
         <Toolbar>
           <Input
             placeholder="Search name, company, email, phone, PAN, GST..."
@@ -3398,8 +3562,11 @@ export default function ClientManagement() {
           </Select>
           <SecondaryBtn onClick={load}>Filter</SecondaryBtn>
         </Toolbar>
+        {billingFilterLabels[billingFilter] && (
+          <ActiveFilterNote>{billingFilterLabels[billingFilter]}</ActiveFilterNote>
+        )}
 
-        <TableWrap>
+        <ClientListTableWrap>
           <Table>
             <thead>
               <tr>
@@ -3407,17 +3574,19 @@ export default function ClientManagement() {
                 <th>Name</th>
                 <th>Phone</th>
                 <th>Email</th>
-                <th>PAN</th>
                 <th>GST</th>
                 <th>Address</th>
                 <th>Status</th>
+                <th>Invoices Raised</th>
+                <th>Pending Invoices</th>
+                <th>Payment Pending</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 Array.from({ length: 6 }).map((_, i) => (
                   <tr key={i}>
-                    {Array.from({ length: 8 }).map((__, j) => (
+                    {Array.from({ length: 10 }).map((__, j) => (
                       <td key={j}>
                         <Skeleton />
                       </td>
@@ -3426,7 +3595,7 @@ export default function ClientManagement() {
                 ))
               ) : clients.length === 0 ? (
                 <tr>
-                  <td colSpan={8}>
+                  <td colSpan={10}>
                     <Empty>
                       <p>No clients found</p>
                       {canCreateClient && (
@@ -3436,7 +3605,7 @@ export default function ClientManagement() {
                   </td>
                 </tr>
               ) : (
-                clients.map((client) => (
+                clients.map((client, index) => (
                   <ClickableRow
                     key={client.id}
                     tabIndex={0}
@@ -3446,23 +3615,46 @@ export default function ClientManagement() {
                         navigate(`/admin/clients/${client.id}`);
                     }}
                   >
-                    <td style={{ fontWeight: 700 }}>{client.companyName}</td>
-                    <td>{client.name || "-"}</td>
+                    <td>
+                      <DesktopClientCell>
+                        <DesktopClientAvatar $bg={avatarColors[index % avatarColors.length]}>
+                          {clientInitials(client)}
+                        </DesktopClientAvatar>
+                        <DesktopClientName title={client.companyName || client.name || "Unnamed Client"}>
+                          {client.companyName || client.name || "Unnamed Client"}
+                        </DesktopClientName>
+                      </DesktopClientCell>
+                    </td>
+                    <td>
+                      <DesktopMutedCell $width="150px" title={client.name || client.contactPerson || "-"}>
+                        {client.name || client.contactPerson || "-"}
+                      </DesktopMutedCell>
+                    </td>
                     <td>{client.phone || "-"}</td>
-                    <td style={{ color: "#0254a0" }}>{client.email || "-"}</td>
-                    <td>{client.pan || "-"}</td>
+                    <td>
+                      <DesktopEmail $width="190px" title={client.email || "-"}>
+                        {client.email || "-"}
+                      </DesktopEmail>
+                    </td>
                     <td>{client.gstin || "-"}</td>
-                    <td
-                      style={{
-                        maxWidth: 220,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {client.address || "-"}
+                    <td>
+                      <DesktopMutedCell $width="210px" title={client.address || "-"}>
+                        {client.address || "-"}
+                      </DesktopMutedCell>
                     </td>
                     <td>
                       <Badge $status={client.status}>{client.status}</Badge>
+                    </td>
+                    <td>
+                      <DesktopCountValue>{client.invoicesRaisedCount || 0}</DesktopCountValue>
+                    </td>
+                    <td>
+                      <DesktopCountValue>{client.pendingInvoicesCount || 0}</DesktopCountValue>
+                    </td>
+                    <td>
+                      <DesktopPayment $pending={Number(client.paymentPendingAmount || 0) > 0}>
+                        {formatCurrency(client.paymentPendingAmount || 0)}
+                      </DesktopPayment>
                     </td>
                   </ClickableRow>
                 ))
@@ -3478,7 +3670,7 @@ export default function ClientManagement() {
               onPage={setPage}
             />
           </div>
-        </TableWrap>
+        </ClientListTableWrap>
       </DesktopClientsView>
 
       {modalOpen && (

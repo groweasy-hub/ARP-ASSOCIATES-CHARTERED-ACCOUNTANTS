@@ -1,3 +1,11 @@
+self.addEventListener("install", (event) => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(clients.claim());
+});
+
 self.addEventListener("push", (event) => {
   let payload = {};
   try {
@@ -12,7 +20,10 @@ self.addEventListener("push", (event) => {
     icon: payload.icon || "/logo192.png",
     badge: payload.badge || "/logo192.png",
     tag: payload.tag || "arp-admin-notification",
-    data: payload.data || {},
+    data: {
+      ...(payload.data || {}),
+      url: payload.data?.url || payload.url || "/admin/tasks",
+    },
   };
 
   event.waitUntil(self.registration.showNotification(title, options));

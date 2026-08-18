@@ -26,6 +26,28 @@ const Card = styled.div`
   gap: 8px;
 `;
 
+const CardLink = styled(Link)`
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(11,31,60,0.06);
+  border: 1px solid rgba(13,34,68,0.07);
+  animation: ${fadeUp} 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: ${({ $i }) => $i * 80}ms;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    border-color: rgba(2,84,160,0.22);
+    box-shadow: 0 8px 22px rgba(11,31,60,0.1);
+    transform: translateY(-1px);
+  }
+`;
+
 const CardIcon = styled.div`
   width: 38px; height: 38px;
   border-radius: 10px;
@@ -363,11 +385,11 @@ const statCards = (s) => [
 ];
 
 const billingCards = (s) => [
-  { label: "Invoices Raised", value: s.invoicesRaised || 0, sub: "Selected period", bg: "#eaf3fb", color: "#0254a0", type: "number", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> },
-  { label: "Invoice Amount", value: s.invoiceAmount || 0, sub: "Total billed", bg: "#f0f4ff", color: "#4f46e5", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg> },
-  { label: "Amount Paid", value: s.paidAmount || 0, sub: "Payments received", bg: "#ecfdf3", color: "#087443", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6 9 17l-5-5"/><path d="M3 6h18v12H3z"/></svg> },
-  { label: "Pending Amount", value: s.pendingAmount || 0, sub: "Outstanding", bg: "#fffbeb", color: "#b45309", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> },
-  { label: "Pending Invoices", value: s.paymentPendingInvoices || 0, sub: "Awaiting payment", bg: "#fef2f2", color: "#b42318", type: "number", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+  { label: "Invoices Raised", value: s.invoicesRaised || 0, sub: "Selected period", to: "/admin/clients?billing=INVOICE_RAISED", bg: "#eaf3fb", color: "#0254a0", type: "number", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> },
+  { label: "Invoice Amount", value: s.invoiceAmount || 0, sub: "Total billed", to: "/admin/clients?billing=INVOICE_RAISED", bg: "#f0f4ff", color: "#4f46e5", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg> },
+  { label: "Amount Paid", value: s.paidAmount || 0, sub: "Payments received", to: "/admin/clients?billing=PAID", bg: "#ecfdf3", color: "#087443", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6 9 17l-5-5"/><path d="M3 6h18v12H3z"/></svg> },
+  { label: "Pending Amount", value: s.pendingAmount || 0, sub: "Outstanding", to: "/admin/clients?billing=PAYMENT_PENDING", bg: "#fffbeb", color: "#b45309", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> },
+  { label: "Pending Invoices", value: s.paymentPendingInvoices || 0, sub: "Awaiting payment", to: "/admin/clients?billing=PAYMENT_PENDING", bg: "#fef2f2", color: "#b42318", type: "number", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
 ];
 
 export default function Dashboard() {
@@ -407,8 +429,8 @@ export default function Dashboard() {
   const pendingTasks = tasks.filter((task) => task.workStatus !== "Completed");
   const activeEmployees = employees.filter((employee) => employee.status === "Active");
   const mobileTopCards = [
-    { label: "Invoices Raised", value: billingStats?.invoicesRaised || 0, sub: "This month", to: "/admin/clients", bg: "#eaf3fb", color: "#0254a0", icon: billingCards({})[0].icon },
-    { label: "Amount Paid", value: formatCurrency(billingStats?.paidAmount || 0), sub: "This month", to: "/admin/clients", bg: "#ecfdf3", color: "#087443", icon: billingCards({})[2].icon },
+    { label: "Invoices Raised", value: billingStats?.invoicesRaised || 0, sub: "This month", to: "/admin/clients?billing=INVOICE_RAISED", bg: "#eaf3fb", color: "#0254a0", icon: billingCards({})[0].icon },
+    { label: "Amount Paid", value: formatCurrency(billingStats?.paidAmount || 0), sub: "This month", to: "/admin/clients?billing=PAID", bg: "#ecfdf3", color: "#087443", icon: billingCards({})[2].icon },
     { label: "Pending Leads", value: stats?.pending || 0, sub: "New + Follow Up", to: "/admin/leads", bg: "#fff7ed", color: "#c45a00", icon: statCards({})[3].icon },
   ];
   const mobileWideCards = [
@@ -541,14 +563,14 @@ export default function Dashboard() {
               </Card>
             ))
           : billingCards(billingStats || {}).map((c, i) => (
-              <Card key={c.label} $i={i}>
+              <CardLink key={c.label} $i={i} to={c.to}>
                 <CardIcon $bg={c.bg} $color={c.color}>{c.icon}</CardIcon>
                 <CardLabel>{c.label}</CardLabel>
                 <CardValue>
                   {c.type === "currency" ? formatCurrency(c.value) : <AnimatedCount target={c.value || 0} />}
                 </CardValue>
                 <CardSub>{c.sub}</CardSub>
-              </Card>
+              </CardLink>
             ))}
       </Grid>
 
@@ -563,12 +585,12 @@ export default function Dashboard() {
               </Card>
             ))
           : statCards(stats || {}).map((c, i) => (
-              <Card key={c.label} $i={i}>
+              <CardLink key={c.label} $i={i} to="/admin/leads">
                 <CardIcon $bg={c.bg} $color={c.color}>{c.icon}</CardIcon>
                 <CardLabel>{c.label}</CardLabel>
                 <CardValue><AnimatedCount target={c.value || 0} /></CardValue>
                 <CardSub>{c.sub}</CardSub>
-              </Card>
+              </CardLink>
             ))}
       </Grid>
 

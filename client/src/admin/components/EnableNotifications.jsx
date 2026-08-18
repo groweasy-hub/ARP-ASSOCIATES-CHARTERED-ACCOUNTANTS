@@ -172,8 +172,14 @@ export default function EnableNotifications() {
 
   const handleEnable = async () => {
     setSaving(true);
-    const result = await enableTaskPushNotifications();
-    setSaving(false);
+    let result;
+    try {
+      result = await enableTaskPushNotifications();
+    } catch {
+      result = { success: false, reason: "failed" };
+    } finally {
+      setSaving(false);
+    }
 
     if (result.success) {
       setState((current) => ({ ...current, enabled: true, permission: "granted", message: "" }));
