@@ -27,11 +27,12 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      if (!origin || allowedOrigins.includes(origin))
+        return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json({ limit: "5mb" }));
 
@@ -45,9 +46,17 @@ app.use("/api/billing", require("./routes/billing"));
 app.use("/api/notifications", require("./routes/notifications"));
 app.use("/api/push", require("./routes/push"));
 
-app.get("/api/health", (_, res) => res.json({ status: "ok" }));
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "ARP Associates API is running",
+  });
+});
 
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
