@@ -14,6 +14,9 @@ import ServiceDetail from "./pages/ServiceDetail/ServiceDetail";
 import Team from "./pages/Team/Team";
 import Links from "./pages/Links/Links";
 import Contact from "./pages/Contact/Contact";
+import Disclaimer from "./pages/Legal/Disclaimer";
+import PrivacyPolicy from "./pages/Legal/PrivacyPolicy";
+import TermsOfUse from "./pages/Legal/TermsOfUse";
 import NotFound from "./pages/NotFound/NotFound";
 
 import { AuthProvider } from "./admin/context/AuthContext";
@@ -67,6 +70,9 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/links" element={<Links />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-use" element={<TermsOfUse />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
             </Route>
 
             <Route
@@ -110,6 +116,7 @@ function App() {
               <Route path="settings" element={<Settings />} />
               <Route path="change-password" element={<Settings forcePasswordChange />} />
               <Route path="unauthorized" element={<Unauthorized />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
