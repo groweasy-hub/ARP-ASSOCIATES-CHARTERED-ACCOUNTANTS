@@ -17,9 +17,9 @@ const Card = styled.div`
   background: #fff;
   border-radius: 10px;
   padding: 16px;
-  box-shadow: 0 2px 10px rgba(11,31,60,0.06);
-  border: 1px solid rgba(13,34,68,0.07);
-  animation: ${fadeUp} 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
+  border: 1px solid rgba(13, 34, 68, 0.07);
+  animation: ${fadeUp} 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: ${({ $i }) => $i * 80}ms;
   display: flex;
   flex-direction: column;
@@ -30,9 +30,9 @@ const CardLink = styled(Link)`
   background: #fff;
   border-radius: 10px;
   padding: 16px;
-  box-shadow: 0 2px 10px rgba(11,31,60,0.06);
-  border: 1px solid rgba(13,34,68,0.07);
-  animation: ${fadeUp} 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
+  border: 1px solid rgba(13, 34, 68, 0.07);
+  animation: ${fadeUp} 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: ${({ $i }) => $i * 80}ms;
   display: flex;
   flex-direction: column;
@@ -42,24 +42,45 @@ const CardLink = styled(Link)`
   cursor: pointer;
 
   &:hover {
-    border-color: rgba(2,84,160,0.22);
-    box-shadow: 0 8px 22px rgba(11,31,60,0.1);
+    border-color: rgba(2, 84, 160, 0.22);
+    box-shadow: 0 8px 22px rgba(11, 31, 60, 0.1);
     transform: translateY(-1px);
   }
 `;
 
 const CardIcon = styled.div`
-  width: 38px; height: 38px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   background: ${({ $bg }) => $bg || "#eaf3fb"};
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: ${({ $color }) => $color || "#0254a0"};
-  svg { width: 18px; height: 18px; }
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
-const CardLabel = styled.p`margin: 0; color: #33425e; font-size: 0.72rem; font-weight: 500;`;
-const CardValue = styled.h2`margin: 0; color: #0d2244; font-size: 1.45rem; font-weight: 700; letter-spacing: 0;`;
-const CardSub = styled.p`margin: 0; color: #33425e; font-size: 0.68rem;`;
+const CardLabel = styled.p`
+  margin: 0;
+  color: #33425e;
+  font-size: 0.72rem;
+  font-weight: 500;
+`;
+const CardValue = styled.h2`
+  margin: 0;
+  color: #0d2244;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0;
+`;
+const CardSub = styled.p`
+  margin: 0;
+  color: #33425e;
+  font-size: 0.68rem;
+`;
 
 const SectionTitle = styled.h3`
   margin: 0 0 12px;
@@ -95,7 +116,7 @@ const FilterBar = styled.div`
 
   input {
     height: 34px;
-    border: 1px solid rgba(13,34,68,0.16);
+    border: 1px solid rgba(13, 34, 68, 0.16);
     border-radius: 7px;
     padding: 0 9px;
     color: #0d2244;
@@ -112,8 +133,8 @@ const FilterBar = styled.div`
 const RecentTable = styled.div`
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(11,31,60,0.06);
-  border: 1px solid rgba(13,34,68,0.07);
+  box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
+  border: 1px solid rgba(13, 34, 68, 0.07);
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
@@ -127,10 +148,28 @@ const Table = styled.table`
   border-collapse: collapse;
   font-size: 0.8rem;
 
-  th { padding: 10px 12px; text-align: left; color: #33425e; font-weight: 600; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; background: #f6fbff; border-bottom: 1px solid rgba(13,34,68,0.08); }
-  td { padding: 10px 12px; color: #0d2244; border-bottom: 1px solid rgba(13,34,68,0.06); }
-  tr:last-child td { border-bottom: 0; }
-  tr:hover td { background: #f9fbff; }
+  th {
+    padding: 10px 12px;
+    text-align: left;
+    color: #33425e;
+    font-weight: 600;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #f6fbff;
+    border-bottom: 1px solid rgba(13, 34, 68, 0.08);
+  }
+  td {
+    padding: 10px 12px;
+    color: #0d2244;
+    border-bottom: 1px solid rgba(13, 34, 68, 0.06);
+  }
+  tr:last-child td {
+    border-bottom: 0;
+  }
+  tr:hover td {
+    background: #f9fbff;
+  }
 `;
 
 const Skeleton = styled.div`
@@ -140,14 +179,38 @@ const Skeleton = styled.div`
   background-size: 200% 100%;
   border-radius: 6px;
   animation: shimmer 1.4s infinite;
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
 `;
 
 const StatusDot = styled.span`
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 8px; border-radius: 9999px; font-size: 0.66rem; font-weight: 600;
-  background: ${({ $s }) => ({ New: "#eaf3fb", Contacted: "#ecfdf3", "Follow Up": "#fffbeb", Closed: "#f3f4f6" }[$s] || "#f3f4f6")};
-  color: ${({ $s }) => ({ New: "#0254a0", Contacted: "#087443", "Follow Up": "#b45309", Closed: "#374151" }[$s] || "#374151")};
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  background: ${({ $s }) =>
+    ({
+      New: "#eaf3fb",
+      Contacted: "#ecfdf3",
+      "Follow Up": "#fffbeb",
+      Closed: "#f3f4f6",
+    })[$s] || "#f3f4f6"};
+  color: ${({ $s }) =>
+    ({
+      New: "#0254a0",
+      Contacted: "#087443",
+      "Follow Up": "#b45309",
+      Closed: "#374151",
+    })[$s] || "#374151"};
 `;
 
 const DesktopDashboard = styled.div`
@@ -161,7 +224,62 @@ const MobileDashboard = styled.div`
 
   @media (max-width: 760px) {
     display: grid;
-    gap: 12px;
+    gap: 16px;
+  }
+`;
+
+const MobileSection = styled.section`
+  display: grid;
+  gap: 10px;
+`;
+
+const MobileSectionTitle = styled.h2`
+  margin: 0 0 0 8px;
+  color: #071e49;
+  font-size: 0.98rem;
+  line-height: 1.2;
+  font-weight: 500;
+`;
+
+const MobileDatePill = styled.div`
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(13, 34, 68, 0.1);
+  box-shadow: 0 8px 22px rgba(11, 31, 60, 0.06);
+  color: #33425e;
+  font-size: 0.76rem;
+  font-weight: 700;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    color: #071e49;
+    flex: 0 0 auto;
+  }
+
+  strong {
+    color: #071e49;
+    font-size: 0.78rem;
+  }
+
+  input {
+    width: 92px;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #071e49;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    outline: none;
   }
 `;
 
@@ -174,15 +292,15 @@ const MobileWelcome = styled.div`
   padding: 18px;
   border-radius: 18px;
   background: linear-gradient(135deg, #ffffff 0%, #f5faff 100%);
-  border: 1px solid rgba(13,34,68,0.08);
-  box-shadow: 0 12px 30px rgba(11,31,60,0.08);
+  border: 1px solid rgba(13, 34, 68, 0.08);
+  box-shadow: 0 12px 30px rgba(11, 31, 60, 0.08);
 
   h2 {
     margin: 0 0 8px;
     color: #071e49;
-    font-size: 1rem;
+    font-size: 1.06rem;
     line-height: 1.25;
-    font-weight: 800;
+    font-weight: 500;
   }
 
   p {
@@ -200,17 +318,17 @@ const MobileWelcome = styled.div`
 
 const MobileStats = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 10px;
 `;
 
 const MobileStatCard = styled(Link)`
-  min-height: 120px;
-  padding: 12px;
+  min-height: 128px;
+  padding: 14px;
   border-radius: 16px;
   background: #ffffff;
-  border: 1px solid rgba(13,34,68,0.07);
-  box-shadow: 0 10px 24px rgba(11,31,60,0.07);
+  border: 1px solid rgba(13, 34, 68, 0.07);
+  box-shadow: 0 10px 24px rgba(11, 31, 60, 0.07);
   color: #071e49;
   text-decoration: none;
   display: grid;
@@ -222,18 +340,20 @@ const MobileStatCard = styled(Link)`
   }
 
   strong {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     line-height: 1.25;
+    font-weight: 500;
   }
 
   b {
-    font-size: 1.1rem;
+    font-size: 1.16rem;
     line-height: 1;
+    font-weight: 500;
   }
 
   span {
     color: #53627a;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 `;
 
@@ -254,21 +374,22 @@ const MobileStatIcon = styled.div`
 
 const MobileWideStats = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 10px;
 `;
 
 const MobilePanel = styled.div`
   padding: 14px;
   border-radius: 16px;
   background: #ffffff;
-  border: 1px solid rgba(13,34,68,0.07);
-  box-shadow: 0 10px 24px rgba(11,31,60,0.07);
+  border: 1px solid rgba(13, 34, 68, 0.07);
+  box-shadow: 0 10px 24px rgba(11, 31, 60, 0.07);
 
   h3 {
     margin: 0 0 12px;
     color: #071e49;
-    font-size: 0.9rem;
+    font-size: 0.98rem;
+    font-weight: 500;
   }
 `;
 
@@ -284,15 +405,15 @@ const QuickAction = styled(Link)`
   gap: 7px;
   color: #071e49;
   text-decoration: none;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 500;
 
   i {
     width: 48px;
     height: 48px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(13,34,68,0.08);
+    border: 1px solid rgba(13, 34, 68, 0.08);
     border-radius: 14px;
     background: ${({ $bg }) => $bg || "#f6fbff"};
     color: ${({ $color }) => $color || "#0254a0"};
@@ -311,7 +432,7 @@ const MobileListItem = styled(Link)`
   align-items: center;
   gap: 10px;
   padding: 10px;
-  border: 1px solid rgba(13,34,68,0.09);
+  border: 1px solid rgba(13, 34, 68, 0.09);
   border-radius: 14px;
   color: #071e49;
   text-decoration: none;
@@ -321,14 +442,15 @@ const MobileListItem = styled(Link)`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
+    font-weight: 500;
   }
 
   span {
     display: block;
     margin-top: 3px;
     color: #53627a;
-    font-size: 0.7rem;
+    font-size: 0.74rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -343,7 +465,7 @@ const MobileInitial = styled.div`
   place-items: center;
   background: ${({ $bg }) => $bg || "#eaf3fb"};
   color: ${({ $color }) => $color || "#0254a0"};
-  font-weight: 800;
+  font-weight: 500;
 `;
 
 function AnimatedCount({ target }) {
@@ -355,8 +477,10 @@ function AnimatedCount({ target }) {
     const step = Math.ceil(target / 30);
     ref.current = setInterval(() => {
       start += step;
-      if (start >= target) { setVal(target); clearInterval(ref.current); }
-      else setVal(start);
+      if (start >= target) {
+        setVal(target);
+        clearInterval(ref.current);
+      } else setVal(start);
     }, 30);
     return () => clearInterval(ref.current);
   }, [target]);
@@ -368,35 +492,224 @@ const monthStart = () => {
   const date = new Date();
   return formatDateInput(new Date(date.getFullYear(), date.getMonth(), 1));
 };
-const today = () => formatDateInput(new Date());
+const monthEnd = () => {
+  const date = new Date();
+  return formatDateInput(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+};
 const formatCurrency = (value) =>
   Number(value || 0).toLocaleString("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
   });
-
 const statCards = (s) => [
-  { label: "Total Leads", value: s.total, sub: "All time", bg: "#eaf3fb", color: "#0254a0", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
-  { label: "New Leads Today", value: s.today, sub: "Since midnight", bg: "#ecfdf3", color: "#087443", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
-  { label: "Total Messages", value: s.messages, sub: "Contact form", bg: "#f0f4ff", color: "#4f46e5", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
-  { label: "Pending Leads", value: s.pending, sub: "New + Follow Up", bg: "#fffbeb", color: "#b45309", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> },
-  { label: "Contacted", value: s.contacted, sub: "Leads contacted", bg: "#f0fdf4", color: "#15803d", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> },
+  {
+    label: "Total Leads",
+    value: s.total,
+    sub: "All time",
+    bg: "#eaf3fb",
+    color: "#0254a0",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    label: "New Leads Today",
+    value: s.today,
+    sub: "Since midnight",
+    bg: "#ecfdf3",
+    color: "#087443",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    ),
+  },
+  {
+    label: "Total Messages",
+    value: s.messages,
+    sub: "Contact form",
+    bg: "#f0f4ff",
+    color: "#4f46e5",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Pending Leads",
+    value: s.pending,
+    sub: "New + Follow Up",
+    bg: "#fffbeb",
+    color: "#b45309",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+    ),
+  },
+  {
+    label: "Contacted",
+    value: s.contacted,
+    sub: "Leads contacted",
+    bg: "#f0fdf4",
+    color: "#15803d",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ),
+  },
 ];
 
 const billingCards = (s) => [
-  { label: "Invoices Raised", value: s.invoicesRaised || 0, sub: "Selected period", to: "/admin/clients?billing=INVOICE_RAISED", bg: "#eaf3fb", color: "#0254a0", type: "number", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> },
-  { label: "Invoice Amount", value: s.invoiceAmount || 0, sub: "Total billed", to: "/admin/clients?billing=INVOICE_RAISED", bg: "#f0f4ff", color: "#4f46e5", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg> },
-  { label: "Amount Paid", value: s.paidAmount || 0, sub: "Payments received", to: "/admin/clients?billing=PAID", bg: "#ecfdf3", color: "#087443", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6 9 17l-5-5"/><path d="M3 6h18v12H3z"/></svg> },
-  { label: "Pending Amount", value: s.pendingAmount || 0, sub: "Outstanding", to: "/admin/clients?billing=PAYMENT_PENDING", bg: "#fffbeb", color: "#b45309", type: "currency", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> },
-  { label: "Pending Invoices", value: s.paymentPendingInvoices || 0, sub: "Awaiting payment", to: "/admin/clients?billing=PAYMENT_PENDING", bg: "#fef2f2", color: "#b42318", type: "number", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+  {
+    label: "Invoices Raised",
+    value: s.invoicesRaised || 0,
+    sub: "This month",
+    to: "/admin/clients?billing=INVOICE_RAISED",
+    bg: "#eaf3fb",
+    color: "#0254a0",
+    type: "number",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="8" y1="13" x2="16" y2="13" />
+        <line x1="8" y1="17" x2="16" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    label: "Invoice Amount",
+    value: s.invoiceAmount || 0,
+    sub: "This month billed",
+    to: "/admin/clients?billing=INVOICE_RAISED",
+    bg: "#f0f4ff",
+    color: "#4f46e5",
+    type: "currency",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <path d="M7 8h10M7 12h10M7 16h6" />
+      </svg>
+    ),
+  },
+  {
+    label: "Amount Paid",
+    value: s.paidAmount || 0,
+    sub: "This month received",
+    to: "/admin/clients?billing=PAID",
+    bg: "#ecfdf3",
+    color: "#087443",
+    type: "currency",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M20 6 9 17l-5-5" />
+        <path d="M3 6h18v12H3z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Pending Amount",
+    value: s.pendingAmount || 0,
+    sub: "All outstanding",
+    to: "/admin/clients?billing=PAYMENT_PENDING",
+    bg: "#fffbeb",
+    color: "#b45309",
+    type: "currency",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    ),
+  },
+  {
+    label: "Pending Invoices",
+    value: s.paymentPendingInvoices || 0,
+    sub: "All awaiting payment",
+    to: "/admin/clients?billing=PAYMENT_PENDING",
+    bg: "#fef2f2",
+    color: "#b42318",
+    type: "number",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+  },
 ];
 
 export default function Dashboard() {
   const { admin } = useAuth();
   const [stats, setStats] = useState(null);
   const [billingStats, setBillingStats] = useState(null);
-  const [dateRange, setDateRange] = useState({ from: monthStart(), to: today() });
+  const [dateRange, setDateRange] = useState({
+    from: monthStart(),
+    to: monthEnd(),
+  });
   const [recent, setRecent] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -404,7 +717,12 @@ export default function Dashboard() {
   const [billingLoading, setBillingLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([api.get("/leads/stats"), api.get("/leads?limit=5&sort=newest"), api.get("/tasks"), api.get("/users")])
+    Promise.all([
+      api.get("/leads/stats"),
+      api.get("/leads?limit=5&sort=newest"),
+      api.get("/tasks"),
+      api.get("/users"),
+    ])
       .then(([s, l, t, u]) => {
         if (s.success) setStats(s.stats);
         if (l.success) setRecent(l.leads);
@@ -419,7 +737,8 @@ export default function Dashboard() {
     const params = new URLSearchParams();
     if (dateRange.from) params.set("from", dateRange.from);
     if (dateRange.to) params.set("to", dateRange.to);
-    api.get(`/billing/stats?${params}`)
+    api
+      .get(`/billing/stats?${params}`)
       .then((res) => {
         if (res.success) setBillingStats(res.stats);
       })
@@ -427,70 +746,162 @@ export default function Dashboard() {
   }, [dateRange]);
 
   const pendingTasks = tasks.filter((task) => task.workStatus !== "Completed");
-  const activeEmployees = employees.filter((employee) => employee.status === "Active");
-  const mobileTopCards = [
-    { label: "Invoices Raised", value: billingStats?.invoicesRaised || 0, sub: "This month", to: "/admin/clients?billing=INVOICE_RAISED", bg: "#eaf3fb", color: "#0254a0", icon: billingCards({})[0].icon },
-    { label: "Amount Paid", value: formatCurrency(billingStats?.paidAmount || 0), sub: "This month", to: "/admin/clients?billing=PAID", bg: "#ecfdf3", color: "#087443", icon: billingCards({})[2].icon },
-    { label: "Pending Leads", value: stats?.pending || 0, sub: "New + Follow Up", to: "/admin/leads", bg: "#fff7ed", color: "#c45a00", icon: statCards({})[3].icon },
-  ];
+  const activeEmployees = employees.filter(
+    (employee) => employee.status === "Active",
+  );
+  const mobileBillingCards = billingCards(billingStats || {});
   const mobileWideCards = [
-    { label: "Pending Tasks", value: pendingTasks.length, sub: "Needs attention", to: "/admin/tasks", bg: "#f3e8ff", color: "#7c3aed", icon: statCards({})[3].icon },
-    { label: "Employees", value: activeEmployees.length, sub: "Active", to: "/admin/employees", bg: "#eaf3fb", color: "#0254a0", icon: statCards({})[0].icon },
+    {
+      label: "Pending Tasks",
+      value: pendingTasks.length,
+      sub: "Needs attention",
+      to: "/admin/tasks",
+      bg: "#f3e8ff",
+      color: "#7c3aed",
+      icon: statCards({})[3].icon,
+    },
+    {
+      label: "Employees",
+      value: activeEmployees.length,
+      sub: "Active",
+      to: "/admin/employees",
+      bg: "#eaf3fb",
+      color: "#0254a0",
+      icon: statCards({})[0].icon,
+    },
   ];
   const quickActions = [
-    { label: "Leads", to: "/admin/leads", bg: "#eaf3fb", color: "#0254a0", icon: statCards({})[0].icon },
-    { label: "Clients", to: "/admin/clients", bg: "#ecfdf3", color: "#087443", icon: billingCards({})[1].icon },
-    { label: "Tasks", to: "/admin/tasks", bg: "#fff7ed", color: "#c45a00", icon: mobileWideCards[0].icon },
-    { label: "Employees", to: "/admin/employees", bg: "#f3e8ff", color: "#7c3aed", icon: mobileWideCards[1].icon },
-    { label: "Settings", to: "/admin/settings", bg: "#f8fafc", color: "#071e49", icon: navGearIcon },
-  ].filter((item) => ["SUPER_ADMIN", "ADMIN", "MANAGER"].includes(admin?.role) || !["Employees"].includes(item.label));
+    {
+      label: "Leads",
+      to: "/admin/leads",
+      bg: "#eaf3fb",
+      color: "#0254a0",
+      icon: statCards({})[0].icon,
+    },
+    {
+      label: "Clients",
+      to: "/admin/clients",
+      bg: "#ecfdf3",
+      color: "#087443",
+      icon: billingCards({})[1].icon,
+    },
+    {
+      label: "Tasks",
+      to: "/admin/tasks",
+      bg: "#fff7ed",
+      color: "#c45a00",
+      icon: mobileWideCards[0].icon,
+    },
+    {
+      label: "Employees",
+      to: "/admin/employees",
+      bg: "#f3e8ff",
+      color: "#7c3aed",
+      icon: mobileWideCards[1].icon,
+    },
+    {
+      label: "Settings",
+      to: "/admin/settings",
+      bg: "#f8fafc",
+      color: "#071e49",
+      icon: navGearIcon,
+    },
+  ].filter(
+    (item) =>
+      ["SUPER_ADMIN", "ADMIN", "MANAGER"].includes(admin?.role) ||
+      !["Employees"].includes(item.label),
+  );
   const firstTask = pendingTasks[0];
+  const renderMobileCard = (card) => (
+    <MobileStatCard key={card.label} to={card.to}>
+      <MobileStatIcon $bg={card.bg} $color={card.color}>
+        {card.icon}
+      </MobileStatIcon>
+      <strong>{card.label}</strong>
+      <b>
+        {card.type === "currency" ? formatCurrency(card.value) : card.value}
+      </b>
+      <span>{card.sub}</span>
+    </MobileStatCard>
+  );
 
   return (
     <>
       <MobileDashboard>
         <MobileWelcome>
           <div>
-            <h2>Welcome back, {(admin?.firstName || admin?.name || "Admin").split(" ")[0]}!</h2>
+            <h2>
+              Welcome back,{" "}
+              {(admin?.firstName || admin?.name || "Admin").split(" ")[0]}!
+            </h2>
             <p>Here's what's happening in your workspace today.</p>
           </div>
           <svg viewBox="0 0 120 100" fill="none" aria-hidden="true">
-            <rect x="28" y="12" width="62" height="76" rx="8" fill="#d8ebff"/>
-            <rect x="36" y="24" width="46" height="6" rx="3" fill="#8bbcf4"/>
-            <rect x="38" y="58" width="10" height="18" rx="2" fill="#3b82f6"/>
-            <rect x="54" y="46" width="10" height="30" rx="2" fill="#60a5fa"/>
-            <rect x="70" y="36" width="10" height="40" rx="2" fill="#93c5fd"/>
-            <circle cx="84" cy="74" r="24" fill="#3b82f6"/>
-            <path d="m73 74 8 8 15-18" stroke="#fff" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+            <rect x="28" y="12" width="62" height="76" rx="8" fill="#d8ebff" />
+            <rect x="36" y="24" width="46" height="6" rx="3" fill="#8bbcf4" />
+            <rect x="38" y="58" width="10" height="18" rx="2" fill="#3b82f6" />
+            <rect x="54" y="46" width="10" height="30" rx="2" fill="#60a5fa" />
+            <rect x="70" y="36" width="10" height="40" rx="2" fill="#93c5fd" />
+            <circle cx="84" cy="74" r="24" fill="#3b82f6" />
+            <path
+              d="m73 74 8 8 15-18"
+              stroke="#fff"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </MobileWelcome>
 
-        <MobileStats>
-          {mobileTopCards.map((card) => (
-            <MobileStatCard key={card.label} to={card.to}>
-              <MobileStatIcon $bg={card.bg} $color={card.color}>{card.icon}</MobileStatIcon>
-              <strong>{card.label}</strong>
-              <b>{card.value}</b>
-              <span>{card.sub}</span>
-            </MobileStatCard>
-          ))}
-        </MobileStats>
-        <MobileWideStats>
-          {mobileWideCards.map((card) => (
-            <MobileStatCard key={card.label} to={card.to}>
-              <MobileStatIcon $bg={card.bg} $color={card.color}>{card.icon}</MobileStatIcon>
-              <strong>{card.label}</strong>
-              <b>{card.value}</b>
-              <span>{card.sub}</span>
-            </MobileStatCard>
-          ))}
-        </MobileWideStats>
+        <MobileSection>
+          <MobileSectionTitle>Billing Summary</MobileSectionTitle>
+          <MobileDatePill>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            <span>From</span>
+            <input
+              aria-label="Billing summary from date"
+              type="date"
+              value={dateRange.from}
+              onChange={(event) =>
+                setDateRange((current) => ({ ...current, from: event.target.value }))
+              }
+            />
+            <span>to</span>
+            <input
+              aria-label="Billing summary to date"
+              type="date"
+              value={dateRange.to}
+              onChange={(event) =>
+                setDateRange((current) => ({ ...current, to: event.target.value }))
+              }
+            />
+          </MobileDatePill>
+          <MobileStats>
+            {mobileBillingCards.slice(0, 3).map(renderMobileCard)}
+          </MobileStats>
+          <MobileWideStats>
+            {mobileBillingCards.slice(3).map(renderMobileCard)}
+          </MobileWideStats>
+        </MobileSection>
 
         <MobilePanel>
           <h3>Quick Actions</h3>
           <QuickGrid>
             {quickActions.map((item) => (
-              <QuickAction key={item.label} to={item.to} $bg={item.bg} $color={item.color}>
+              <QuickAction
+                key={item.label}
+                to={item.to}
+                $bg={item.bg}
+                $color={item.color}
+              >
                 <i>{item.icon}</i>
                 {item.label}
               </QuickAction>
@@ -502,7 +913,9 @@ export default function Dashboard() {
           <h3>Recent Leads</h3>
           {recent[0] ? (
             <MobileListItem to="/admin/leads">
-              <MobileInitial>{recent[0].name?.[0]?.toUpperCase() || "L"}</MobileInitial>
+              <MobileInitial>
+                {recent[0].name?.[0]?.toUpperCase() || "L"}
+              </MobileInitial>
               <div>
                 <strong>{recent[0].name}</strong>
                 <span>{recent[0].email}</span>
@@ -518,10 +931,20 @@ export default function Dashboard() {
           <h3>Pending Task</h3>
           {firstTask ? (
             <MobileListItem to="/admin/tasks">
-              <MobileInitial $bg="#fff7ed" $color="#c45a00">!</MobileInitial>
+              <MobileInitial $bg="#fff7ed" $color="#c45a00">
+                !
+              </MobileInitial>
               <div>
                 <strong>{firstTask.service}</strong>
-                <span>{firstTask.client?.companyName || firstTask.client?.name || "Client"} | Due: {firstTask.dueDate ? new Date(firstTask.dueDate).toLocaleDateString("en-IN") : "-"}</span>
+                <span>
+                  {firstTask.client?.companyName ||
+                    firstTask.client?.name ||
+                    "Client"}{" "}
+                  | Due:{" "}
+                  {firstTask.dueDate
+                    ? new Date(firstTask.dueDate).toLocaleDateString("en-IN")
+                    : "-"}
+                </span>
               </div>
               <StatusDot $s="Follow Up">{firstTask.workStatus}</StatusDot>
             </MobileListItem>
@@ -532,99 +955,144 @@ export default function Dashboard() {
       </MobileDashboard>
 
       <DesktopDashboard>
-      <SectionHeader>
-        <SectionTitle style={{ margin: 0 }}>Billing Summary</SectionTitle>
-        <FilterBar>
-          <label>
-            From
-            <input
-              type="date"
-              value={dateRange.from}
-              onChange={(e) => setDateRange((current) => ({ ...current, from: e.target.value }))}
-            />
-          </label>
-          <label>
-            To
-            <input
-              type="date"
-              value={dateRange.to}
-              onChange={(e) => setDateRange((current) => ({ ...current, to: e.target.value }))}
-            />
-          </label>
-        </FilterBar>
-      </SectionHeader>
-      <Grid>
-        {billingLoading
-          ? Array.from({ length: 5 }).map((_, i) => (
-              <Card key={i} $i={i}>
-                <Skeleton $h="48px" $w="48px" style={{ borderRadius: 12 }} />
-                <Skeleton $h="14px" $w="60%" />
-                <Skeleton $h="36px" $w="55%" />
-              </Card>
-            ))
-          : billingCards(billingStats || {}).map((c, i) => (
-              <CardLink key={c.label} $i={i} to={c.to}>
-                <CardIcon $bg={c.bg} $color={c.color}>{c.icon}</CardIcon>
-                <CardLabel>{c.label}</CardLabel>
-                <CardValue>
-                  {c.type === "currency" ? formatCurrency(c.value) : <AnimatedCount target={c.value || 0} />}
-                </CardValue>
-                <CardSub>{c.sub}</CardSub>
-              </CardLink>
-            ))}
-      </Grid>
+        <SectionHeader>
+          <SectionTitle style={{ margin: 0 }}>
+            This Month Billing Summary
+          </SectionTitle>
+          <FilterBar>
+            <label>
+              From
+              <input
+                type="date"
+                value={dateRange.from}
+                onChange={(e) =>
+                  setDateRange((current) => ({
+                    ...current,
+                    from: e.target.value,
+                  }))
+                }
+              />
+            </label>
+            <label>
+              To
+              <input
+                type="date"
+                value={dateRange.to}
+                onChange={(e) =>
+                  setDateRange((current) => ({
+                    ...current,
+                    to: e.target.value,
+                  }))
+                }
+              />
+            </label>
+          </FilterBar>
+        </SectionHeader>
+        <Grid>
+          {billingLoading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <Card key={i} $i={i}>
+                  <Skeleton $h="48px" $w="48px" style={{ borderRadius: 12 }} />
+                  <Skeleton $h="14px" $w="60%" />
+                  <Skeleton $h="36px" $w="55%" />
+                </Card>
+              ))
+            : billingCards(billingStats || {}).map((c, i) => (
+                <CardLink key={c.label} $i={i} to={c.to}>
+                  <CardIcon $bg={c.bg} $color={c.color}>
+                    {c.icon}
+                  </CardIcon>
+                  <CardLabel>{c.label}</CardLabel>
+                  <CardValue>
+                    {c.type === "currency" ? (
+                      formatCurrency(c.value)
+                    ) : (
+                      <AnimatedCount target={c.value || 0} />
+                    )}
+                  </CardValue>
+                  <CardSub>{c.sub}</CardSub>
+                </CardLink>
+              ))}
+        </Grid>
 
-      <SectionTitle>Leads Summary</SectionTitle>
-      <Grid>
-        {loading
-          ? Array.from({ length: 5 }).map((_, i) => (
-              <Card key={i} $i={i}>
-                <Skeleton $h="48px" $w="48px" style={{ borderRadius: 12 }} />
-                <Skeleton $h="14px" $w="60%" />
-                <Skeleton $h="36px" $w="40%" />
-              </Card>
-            ))
-          : statCards(stats || {}).map((c, i) => (
-              <CardLink key={c.label} $i={i} to="/admin/leads">
-                <CardIcon $bg={c.bg} $color={c.color}>{c.icon}</CardIcon>
-                <CardLabel>{c.label}</CardLabel>
-                <CardValue><AnimatedCount target={c.value || 0} /></CardValue>
-                <CardSub>{c.sub}</CardSub>
-              </CardLink>
-            ))}
-      </Grid>
+        <SectionTitle>Leads Summary</SectionTitle>
+        <Grid>
+          {loading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <Card key={i} $i={i}>
+                  <Skeleton $h="48px" $w="48px" style={{ borderRadius: 12 }} />
+                  <Skeleton $h="14px" $w="60%" />
+                  <Skeleton $h="36px" $w="40%" />
+                </Card>
+              ))
+            : statCards(stats || {}).map((c, i) => (
+                <CardLink key={c.label} $i={i} to="/admin/leads">
+                  <CardIcon $bg={c.bg} $color={c.color}>
+                    {c.icon}
+                  </CardIcon>
+                  <CardLabel>{c.label}</CardLabel>
+                  <CardValue>
+                    <AnimatedCount target={c.value || 0} />
+                  </CardValue>
+                  <CardSub>{c.sub}</CardSub>
+                </CardLink>
+              ))}
+        </Grid>
 
-      <SectionTitle>Recent Leads</SectionTitle>
-      <RecentTable>
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th><th>Email</th><th>Subject</th><th>Status</th><th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading
-              ? Array.from({ length: 5 }).map((_, i) => (
+        <SectionTitle>Recent Leads</SectionTitle>
+        <RecentTable>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i}>
                     {Array.from({ length: 5 }).map((__, j) => (
-                      <td key={j}><Skeleton $h="16px" /></td>
+                      <td key={j}>
+                        <Skeleton $h="16px" />
+                      </td>
                     ))}
                   </tr>
                 ))
-              : recent.length === 0
-              ? <tr><td colSpan={5} style={{ textAlign: "center", color: "#33425e", padding: "32px" }}>No leads yet</td></tr>
-              : recent.map((l) => (
+              ) : recent.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    style={{
+                      textAlign: "center",
+                      color: "#33425e",
+                      padding: "32px",
+                    }}
+                  >
+                    No leads yet
+                  </td>
+                </tr>
+              ) : (
+                recent.map((l) => (
                   <tr key={l._id}>
                     <td>{l.name}</td>
                     <td style={{ color: "#0254a0" }}>{l.email}</td>
                     <td>{l.subject}</td>
-                    <td><StatusDot $s={l.status}>{l.status}</StatusDot></td>
-                    <td style={{ color: "#33425e", fontSize: "0.8rem" }}>{new Date(l.createdAt).toLocaleDateString("en-IN")}</td>
+                    <td>
+                      <StatusDot $s={l.status}>{l.status}</StatusDot>
+                    </td>
+                    <td style={{ color: "#33425e", fontSize: "0.8rem" }}>
+                      {new Date(l.createdAt).toLocaleDateString("en-IN")}
+                    </td>
                   </tr>
-                ))}
-          </tbody>
-        </Table>
-      </RecentTable>
+                ))
+              )}
+            </tbody>
+          </Table>
+        </RecentTable>
       </DesktopDashboard>
     </>
   );
@@ -632,7 +1100,7 @@ export default function Dashboard() {
 
 const navGearIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="3"/>
-    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.2.36.3.75.3 1.15V10.3A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.2.36.3.75.3 1.15V10.3A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z" />
   </svg>
 );

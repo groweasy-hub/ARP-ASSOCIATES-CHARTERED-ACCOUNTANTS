@@ -7,6 +7,7 @@ import { roleLabel } from "../permissions";
 import EnableNotifications from "./EnableNotifications";
 
 const fadeIn = keyframes`from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}`;
+const fadeUp = keyframes`from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}`;
 
 const Shell = styled.div`
   display: flex;
@@ -28,11 +29,14 @@ const Shell = styled.div`
 const Sidebar = styled.aside`
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  width: 236px;
-  background: ${({ theme }) => theme.colors.ink};
+  width: 220px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(32, 118, 255, 0.18), transparent 38%),
+    linear-gradient(180deg, #041b43 0%, #05285f 48%, #04245a 100%);
   display: flex;
   flex-direction: column;
   z-index: ${({ theme }) => theme.zIndex.header};
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.22), 10px 0 34px rgba(2, 20, 54, 0.18);
   transition: transform ${({ theme }) => theme.motion.duration.base} ${({ theme }) => theme.motion.easing.spring};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.laptop}) {
@@ -45,19 +49,36 @@ const Sidebar = styled.aside`
 `;
 
 const SidebarLogo = styled.div`
-  padding: 22px 20px ${({ theme }) => theme.spacing[16]};
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 20px 18px 18px;
+  min-height: 72px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
 
-  h1 { margin: 0; color: #fff; font-size: ${({ theme }) => theme.typography.size.base}; font-weight: ${({ theme }) => theme.typography.weight.bold}; letter-spacing: 0; }
-  span { color: rgba(255,255,255,0.45); font-size: ${({ theme }) => theme.typography.size.xs}; letter-spacing: 0.08em; text-transform: uppercase; }
+  h1 {
+    margin: 0;
+    color: #fff;
+    font-size: 0.92rem;
+    line-height: 1.15;
+    font-weight: ${({ theme }) => theme.typography.weight.bold};
+    letter-spacing: 0;
+  }
+
+  span {
+    display: block;
+    margin-top: 5px;
+    color: rgba(255,255,255,0.58);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 `;
 
 const Nav = styled.nav`
   flex: 1;
-  padding: ${({ theme }) => theme.spacing[16]} ${({ theme }) => theme.spacing[8]};
+  padding: 18px 8px;
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[4]};
+  gap: 12px;
   overflow-y: auto;
 `;
 
@@ -65,19 +86,41 @@ const NavItem = styled(NavLink)`
   position: relative;
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing[8]};
-  padding: 9px ${({ theme }) => theme.spacing[16]};
-  border-radius: ${({ theme }) => theme.radius.md};
-  color: rgba(255,255,255,0.6);
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 5px;
+  color: rgba(255,255,255,0.92);
   text-decoration: none;
-  font-size: ${({ theme }) => theme.typography.size.sm};
+  font-size: 0.78rem;
   font-weight: ${({ theme }) => theme.typography.weight.medium};
   transition: all ${({ theme }) => theme.motion.duration.fast} ${({ theme }) => theme.motion.easing.standard};
   animation: ${fadeIn} 0.3s ease both;
 
-  &:hover { background: rgba(255,255,255,0.08); color: #fff; }
-  &.active { background: linear-gradient(135deg, ${({ theme }) => theme.colors.secondary}, ${({ theme }) => theme.colors.primary}); color: #fff; box-shadow: ${({ theme }) => theme.shadows.md}; }
-  svg { width: 16px; height: 16px; flex-shrink: 0; }
+  &:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+
+  &.active {
+    background: linear-gradient(90deg, rgba(25, 100, 218, 0.96), rgba(0, 170, 255, 0.96));
+    color: #fff;
+    box-shadow: 0 12px 26px rgba(0, 128, 255, 0.28);
+  }
+
+  &.active::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    right: -1px;
+    width: 4px;
+    height: calc(100% - 6px);
+    border-radius: 999px;
+    background: #08d8ff;
+    box-shadow: 0 0 14px rgba(8, 216, 255, 0.9);
+  }
+
+  svg { width: 15px; height: 15px; flex-shrink: 0; stroke-width: 1.9; }
 `;
 
 const NavLabel = styled.span`
@@ -86,14 +129,14 @@ const NavLabel = styled.span`
 `;
 
 const CountBadge = styled.span`
-  min-width: 18px;
-  height: 18px;
+  min-width: 17px;
+  height: 17px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0 5px;
   border-radius: 999px;
-  background: #ef4444;
+  background: #176dff;
   color: #ffffff;
   font-size: 0.62rem;
   font-weight: 900;
@@ -101,34 +144,38 @@ const CountBadge = styled.span`
 `;
 
 const SidebarFooter = styled.div`
-  padding: ${({ theme }) => theme.spacing[16]} ${({ theme }) => theme.spacing[8]};
-  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 0 16px;
+  padding: 20px 0 24px;
+  border-top: 1px solid rgba(255,255,255,0.16);
 `;
 
 const LogoutBtn = styled.button`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing[8]};
+  gap: 10px;
   width: 100%;
-  padding: 9px ${({ theme }) => theme.spacing[16]};
-  border-radius: ${({ theme }) => theme.radius.md};
+  min-height: 34px;
+  padding: 0 0;
+  border-radius: 5px;
   background: none;
   border: none;
-  color: rgba(255,255,255,0.5);
-  font-size: ${({ theme }) => theme.typography.size.sm};
+  color: rgba(255,255,255,0.92);
+  font-size: 0.78rem;
   font-weight: ${({ theme }) => theme.typography.weight.medium};
   cursor: pointer;
   transition: all ${({ theme }) => theme.motion.duration.fast} ${({ theme }) => theme.motion.easing.standard};
   font-family: inherit;
-  &:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  &:hover { color: #fff; }
+
+  svg { width: 15px; height: 15px; stroke-width: 1.9; }
 `;
 
 const Main = styled.div`
-  margin-left: 236px;
+  margin-left: 220px;
   flex: 1;
   min-width: 0;
   width: auto;
-  max-width: calc(100% - 236px);
+  max-width: calc(100% - 220px);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -158,7 +205,7 @@ const Header = styled.header`
   padding: 0 ${({ theme }) => theme.spacing[24]};
   min-width: 0;
   max-width: 100%;
-  height: 56px;
+  height: 72px;
   background: rgba(255,255,255,0.95);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
@@ -274,22 +321,6 @@ const NotificationBtn = styled(NavLink)`
   svg { width: 16px; height: 16px; }
 `;
 
-const Avatar = styled.div`
-  width: 32px; height: 32px;
-  border-radius: ${({ theme }) => theme.radius.pill};
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.secondary}, ${({ theme }) => theme.colors.primary});
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: ${({ theme }) => theme.typography.size.sm}; font-weight: ${({ theme }) => theme.typography.weight.bold};
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-`;
-
 const Overlay = styled.div`
   display: none;
   @media (max-width: ${({ theme }) => theme.breakpoints.laptop}) {
@@ -338,6 +369,14 @@ const Content = styled.main`
     padding: 16px 12px 106px;
     border-radius: ${({ theme }) => theme.radius.xxl} ${({ theme }) => theme.radius.xxl} 0 0;
     background: ${({ theme }) => theme.colors.adminCanvas};
+  }
+`;
+
+const AnimatedPage = styled.div`
+  animation: ${fadeUp} 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `;
 
@@ -414,7 +453,7 @@ const BottomIconWrap = styled.span`
 const navLinks = [
   {
     to: "/admin/dashboard", label: "Dashboard",
-    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>,
   },
   {
     to: "/admin/leads", label: "Leads",
@@ -462,7 +501,7 @@ const pageTitle = (pathname) => {
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [navCounts, setNavCounts] = useState({ leads: 0, tasks: 0 });
+  const [navCounts, setNavCounts] = useState({ leads: 0, tasks: 0, notifications: 0 });
   const { admin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -474,9 +513,10 @@ export default function AdminLayout() {
     let mounted = true;
     const loadCounts = async () => {
       try {
-        const [leadStats, taskRes] = await Promise.allSettled([
+        const [leadStats, taskRes, notificationRes] = await Promise.allSettled([
           api.get("/leads/stats"),
           api.get("/tasks"),
+          api.get("/notifications"),
         ]);
         if (!mounted) return;
         const leads =
@@ -487,9 +527,13 @@ export default function AdminLayout() {
           taskRes.status === "fulfilled" && taskRes.value?.success
             ? (taskRes.value.tasks || []).filter((task) => task.workStatus !== "Completed").length
             : 0;
-        setNavCounts({ leads, tasks });
+        const notifications =
+          notificationRes.status === "fulfilled" && notificationRes.value?.success
+            ? (notificationRes.value.notifications || []).length
+            : 0;
+        setNavCounts({ leads, tasks, notifications });
       } catch {
-        if (mounted) setNavCounts({ leads: 0, tasks: 0 });
+        if (mounted) setNavCounts({ leads: 0, tasks: 0, notifications: 0 });
       }
     };
 
@@ -504,6 +548,7 @@ export default function AdminLayout() {
   const badgeFor = (path) => {
     if (path === "/admin/leads") return navCounts.leads;
     if (path === "/admin/tasks") return navCounts.tasks;
+    if (path === "/admin/notifications") return navCounts.notifications;
     return 0;
   };
 
@@ -595,13 +640,13 @@ export default function AdminLayout() {
             <NotificationBtn to="/admin/notifications" title="Notifications">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </NotificationBtn>
-            <Avatar>
+            <AvatarLink to="/admin/settings" title="Open profile" aria-label="Open profile">
               {admin?.profileImage ? (
                 <img src={admin.profileImage} alt={admin?.name || "Admin"} />
               ) : (
                 admin?.name?.[0]?.toUpperCase() || admin?.email?.[0]?.toUpperCase() || "A"
               )}
-            </Avatar>
+            </AvatarLink>
             <div>
               <span>{admin?.name || admin?.email || "Admin"}</span>
               <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: 2 }}>{roleLabel(admin?.role)}</div>
@@ -609,8 +654,10 @@ export default function AdminLayout() {
           </AdminInfo>
         </Header>
         <Content data-page-scroll-container>
-          <EnableNotifications />
-          <Outlet />
+          <AnimatedPage key={`${location.pathname}${location.search}`}>
+            <EnableNotifications />
+            <Outlet />
+          </AnimatedPage>
         </Content>
       </Main>
       <MobileBottomNav $count={mobileLinks.length}>

@@ -47,6 +47,21 @@ const GlobalStyles = createGlobalStyle`
     overflow-x: hidden;
   }
 
+  html.admin-route,
+  html.admin-route body,
+  html.admin-route [data-page-scroll-container] {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html.admin-route::-webkit-scrollbar,
+  html.admin-route body::-webkit-scrollbar,
+  html.admin-route [data-page-scroll-container]::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
   html.admin-route img,
   html.admin-route svg,
   html.admin-route canvas,
@@ -56,23 +71,6 @@ const GlobalStyles = createGlobalStyle`
   html.admin-route textarea,
   html.admin-route button {
     max-width: 100%;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    html,
-    body,
-    [data-page-scroll-container] {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    html::-webkit-scrollbar,
-    body::-webkit-scrollbar,
-    [data-page-scroll-container]::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      display: none;
-    }
   }
 
   code {

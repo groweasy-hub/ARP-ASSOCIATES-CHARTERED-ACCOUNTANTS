@@ -8,7 +8,7 @@ import { roleLabel } from "../permissions";
 const fadeUp = keyframes`from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}`;
 
 const Page = styled.div`
-  max-width: 900px;
+  max-width: 760px;
 
   @media (max-width: 768px) {
     max-width: none;
@@ -18,7 +18,7 @@ const Page = styled.div`
 `;
 
 const Header = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 
   h2 {
     margin: 0 0 4px;
@@ -68,7 +68,7 @@ const Card = styled.form`
   border: 1px solid rgba(13, 34, 68, 0.08);
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(11, 31, 60, 0.06);
-  padding: 18px;
+  padding: 14px;
   animation: ${fadeUp} 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 
   @media (max-width: 768px) {
@@ -83,8 +83,8 @@ const CardTitle = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
   border-bottom: 1px solid rgba(13, 34, 68, 0.08);
 
   h3 {
@@ -109,8 +109,8 @@ const CardTitle = styled.div`
 const ProfileRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 12px;
 
   @media (max-width: 768px) {
     display: grid;
@@ -126,9 +126,9 @@ const ProfileRow = styled.div`
 `;
 
 const Avatar = styled.div`
-  width: 58px;
-  height: 58px;
-  flex: 0 0 58px;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -136,7 +136,7 @@ const Avatar = styled.div`
   justify-content: center;
   background: linear-gradient(135deg, #2c649c, #0254a0);
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
 
   img {
@@ -198,27 +198,31 @@ const ProfileIdentity = styled.div`
 
 const DetailGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 
-  @media (max-width: 720px) {
+  @media (max-width: 980px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 `;
 
 const Detail = styled.div`
-  min-height: 52px;
-  padding: 10px 12px;
+  min-height: 44px;
+  padding: 8px 10px;
   border: 1px solid rgba(13, 34, 68, 0.08);
   border-radius: 8px;
   background: #f8fbff;
 
   label {
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     color: #5f6f89;
-    font-size: 0.66rem;
+    font-size: 0.58rem;
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -226,7 +230,7 @@ const Detail = styled.div`
 
   span {
     color: #0d2244;
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 700;
     word-break: break-word;
   }

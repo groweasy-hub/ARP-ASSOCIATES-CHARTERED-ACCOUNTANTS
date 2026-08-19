@@ -4,8 +4,10 @@ const { deleteProfileImage, isDataImage, uploadProfileImage } = require("../conf
 const {
   PASSWORD_UPDATE_FAILURE_MESSAGE,
   REGISTRATION_FAILURE_MESSAGE,
+  USER_LOOKUP_FAILURE_MESSAGE,
   adminResetPasswordSchema,
   signupSchema,
+  userUpdateSchema,
   validateAuthBody,
 } = require("../utils/authSecurity");
 
@@ -123,7 +125,7 @@ exports.createUser = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const user = await Admin.findById(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) return res.status(404).json({ success: false, message: USER_LOOKUP_FAILURE_MESSAGE });
     res.json({ success: true, user: serialize(user, req.admin), assignedClients: [], assignedTasks: [], activity: [] });
   } catch (err) {
     next(err);
@@ -132,8 +134,13 @@ exports.getUser = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
+    const validation = validateAuthBody(userUpdateSchema, req.body, "update-user", req);
+    if (!validation.ok) {
+      return res.status(400).json({ success: false, message: REGISTRATION_FAILURE_MESSAGE });
+    }
+    const body = validation.data;
     const user = await Admin.findById(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) return res.status(404).json({ success: false, message: USER_LOOKUP_FAILURE_MESSAGE });
 
     const isSelf = String(user._id) === String(req.admin._id);
     const canEditOwnProfile = isSelf && isTopAdmin(req.admin.role);
@@ -144,8 +151,8 @@ exports.updateUser = async (req, res, next) => {
     }
 
     // Prevent escalating role above actor's own level
-    if (req.body.role) req.body.role = normalizeRole(req.body.role);
-    if (req.body.role && roleLevel(req.admin.role) <= roleLevel(req.body.role)) {
+    if (body.role) body.role = normalizeRole(body.role);
+    if (body.role && roleLevel(req.admin.role) <= roleLevel(body.role)) {
       return res.status(403).json({ success: false, message: "You can only assign roles below your role level" });
     }
 
@@ -156,10 +163,10 @@ exports.updateUser = async (req, res, next) => {
       ? profileFields
       : [...profileFields, ...managementFields];
 
-    if (req.body.employeeId !== undefined) {
-      const employeeId = normalizeEmployeeId(req.body.employeeId);
+    if (body.employeeId !== undefined) {
+      const employeeId = normalizeEmployeeId(body.employeeId);
       if (employeeId && !isValidEmployeeId(employeeId)) {
-        return res.status(400).json({ success: false, message: "Employee ID must start with ARP and contain at least 5 digits, like ARP12345" });
+        return res.status(400).json({ success: false, message: REGISTRATION_FAILURE_MESSAGE });
       }
       if (employeeId) {
         const duplicateEmployeeId = await Admin.exists({ employeeId, _id: { $ne: user._id } });
@@ -167,23 +174,24 @@ exports.updateUser = async (req, res, next) => {
           return res.status(409).json({ success: false, message: REGISTRATION_FAILURE_MESSAGE });
         }
       }
-      req.body.employeeId = employeeId;
+      body.employeeId = employeeId;
     }
 
     let previousProfileImagePublicId = "";
-    if (req.body.profileImage !== undefined && isDataImage(req.body.profileImage)) {
+    if (body.profileImage !== undefined && isDataImage(body.profileImage)) {
       previousProfileImagePublicId = user.profileImagePublicId;
-      const uploaded = await uploadProfileImage(req.body.profileImage);
-      req.body.profileImage = uploaded.secure_url;
+      const uploaded = await uploadProfileImage(body.profileImage);
+      body.profileImage = uploaded.secure_url;
       user.profileImagePublicId = uploaded.public_id;
     }
 
-    updatable.forEach((field) => { if (req.body[field] !== undefined) user[field] = req.body[field]; });
+    updatable.forEach((field) => { if (body[field] !== undefined) user[field] = body[field]; });
 
     await user.save();
     if (previousProfileImagePublicId) await deleteProfileImage(previousProfileImagePublicId);
     res.json({ success: true, user: serialize(user, req.admin) });
   } catch (err) {
+    if (err.code === 11000) err.message = REGISTRATION_FAILURE_MESSAGE;
     next(err);
   }
 };
@@ -191,7 +199,7 @@ exports.updateUser = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   try {
     const user = await Admin.findById(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) return res.status(404).json({ success: false, message: PASSWORD_UPDATE_FAILURE_MESSAGE });
     if (!canManageUser({ role: req.admin.role }, { role: user.role })) {
       return res.status(403).json({ success: false, message: "You cannot reset password for a user at the same or higher level" });
     }
@@ -212,7 +220,7 @@ exports.deleteUser = async (req, res, next) => {
       return res.status(403).json({ success: false, message: "Only Super Admin can delete employees" });
     }
     const user = await Admin.findById(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) return res.status(404).json({ success: false, message: USER_LOOKUP_FAILURE_MESSAGE });
     if (String(user._id) === String(req.admin._id)) {
       return res.status(400).json({ success: false, message: "You cannot delete your own account" });
     }

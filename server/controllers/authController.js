@@ -12,6 +12,7 @@ const {
   PASSWORD_UPDATE_FAILURE_MESSAGE,
   PROFILE_UPDATE_FAILURE_MESSAGE,
   clearLoginFailures,
+  constantTimeEqual,
   forgotPasswordSchema,
   getLoginState,
   loginSchema,
@@ -21,6 +22,7 @@ const {
   registerLoginFailure,
   validateAuthBody,
   verifyAndMigratePassword,
+  wait,
 } = require("../utils/authSecurity");
 
 const MOBILE_SESSION_EXPIRES_IN = "45d";
@@ -83,7 +85,7 @@ const validateOtp = (admin, otp, purpose) => {
   if (!otp) return "OTP is required";
   if (!admin.otpHash || admin.otpPurpose !== purpose || !admin.otpExpires) return "Please request a new OTP";
   if (admin.otpExpires.getTime() < Date.now()) return "OTP expired. Please request a new OTP";
-  if (admin.otpHash !== hashOtp(otp)) return "Invalid OTP";
+  if (admin.otpHash !== hashOtp(otp)) return "OTP verification failed";
   return "";
 };
 
@@ -114,6 +116,7 @@ const sendLockoutNotification = async (admin) => {
 const failLogin = async (res, identifier, admin = null) => {
   const failure = registerLoginFailure(identifier);
   if (failure.locked) await sendLockoutNotification(admin);
+  if (failure.delayMs) await wait(failure.delayMs);
   return res.status(401).json({ success: false, message: LOGIN_FAILURE_MESSAGE });
 };
 
@@ -131,6 +134,7 @@ exports.login = async (req, res, next) => {
 
     const loginState = getLoginState(identifier);
     if (loginState.blocked) {
+      if (loginState.delayMs) await wait(Math.min(loginState.delayMs, 10000));
       return res.status(401).json({ success: false, message: LOGIN_FAILURE_MESSAGE });
     }
 
@@ -179,7 +183,7 @@ exports.login = async (req, res, next) => {
     // Auto-create configured portal accounts from .env on first login.
     if (!admin) {
       const bootstrapAccount = bootstrapAccounts.find(
-        (account) => email === account.email.toLowerCase() && password === account.password
+        (account) => email === account.email.toLowerCase() && constantTimeEqual(password, account.password)
       );
       if (bootstrapAccount) {
         admin = await Admin.create({

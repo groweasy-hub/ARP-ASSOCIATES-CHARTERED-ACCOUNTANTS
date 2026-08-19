@@ -751,7 +751,7 @@ export default function AdminLogin() {
       toast.success("Welcome back!");
       navigate("/admin/dashboard");
     } else {
-      setError(res.message || "Invalid credentials");
+      setError(res.message || "Incorrect email or password");
     }
   };
 
@@ -802,13 +802,16 @@ export default function AdminLogin() {
         <CardBody>
           <form onSubmit={handleSubmit}>
             <Field>
-              <label>{forgotMode ? "Email" : "Email or Employee ID"}</label>
+              <label htmlFor="admin-email">{forgotMode ? "Email" : "Email or Employee ID"}</label>
               <InputWrap>
                 <FieldIcon aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
                 </FieldIcon>
               <Input
                 $icon
+                autoComplete="username"
+                id="admin-email"
+                name="email"
                 placeholder={forgotMode ? "Enter your email" : "Enter email or employee ID"}
                 required
                 type={forgotMode ? "email" : "text"}
@@ -818,15 +821,18 @@ export default function AdminLogin() {
               </InputWrap>
             </Field>
             <Field>
-              <label>{forgotMode ? "New Password" : "Password"}</label>
+              <label htmlFor="admin-password">{forgotMode ? "New Password" : "Password"}</label>
               <InputWrap>
                 <FieldIcon aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
                 </FieldIcon>
                 <Input
                   $icon
+                  autoComplete={forgotMode ? "new-password" : "current-password"}
                   disabled={forgotMode && !otpSent}
+                  id="admin-password"
                   minLength={forgotMode ? 8 : undefined}
+                  name="password"
                   placeholder={forgotMode ? "Enter new password" : "Enter your password"}
                   required={!forgotMode || otpSent}
                   style={{ paddingRight: 76 }}
@@ -843,8 +849,11 @@ export default function AdminLogin() {
             {forgotMode && otpSent && (
               <>
                 <Field>
-                  <label>Confirm New Password</label>
+                  <label htmlFor="admin-confirm-password">Confirm New Password</label>
                   <Input
+                    autoComplete="new-password"
+                    id="admin-confirm-password"
+                    name="confirmPassword"
                     placeholder="Re-enter new password"
                     required
                     type="password"
@@ -853,10 +862,13 @@ export default function AdminLogin() {
                   />
                 </Field>
                 <Field>
-                  <label>OTP</label>
+                  <label htmlFor="admin-otp">OTP</label>
                   <Input
+                    autoComplete="one-time-code"
+                    id="admin-otp"
                     inputMode="numeric"
                     maxLength={6}
+                    name="otp"
                     placeholder="Enter OTP from mail"
                     required
                     value={form.otp}
@@ -864,8 +876,11 @@ export default function AdminLogin() {
                   />
                 </Field>
                 <Field>
-                  <label>New Email</label>
+                  <label htmlFor="admin-new-email">New Email</label>
                   <Input
+                    autoComplete="email"
+                    id="admin-new-email"
+                    name="newEmail"
                     placeholder="Optional email change"
                     type="email"
                     value={form.newEmail}
@@ -876,7 +891,7 @@ export default function AdminLogin() {
             )}
             <RememberRow>
               <CheckLabel>
-                <input checked={form.remember} type="checkbox" onChange={(event) => setForm({ ...form, remember: event.target.checked })} />
+                <input id="admin-remember" name="remember" checked={form.remember} type="checkbox" onChange={(event) => setForm({ ...form, remember: event.target.checked })} />
                 Remember me
               </CheckLabel>
               {!forgotMode && (

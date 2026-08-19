@@ -1,7 +1,7 @@
 {
   "name": "ARP Associates Admin",
   "short_name": "ARP Admin",
-  "start_url": "/admin",
+  "start_url": "/admin/",
   "scope": "/admin/",
   "display": "standalone",
   "background_color": "#ffffff",

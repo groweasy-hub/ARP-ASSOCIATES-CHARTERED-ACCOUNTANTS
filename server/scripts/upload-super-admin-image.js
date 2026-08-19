@@ -16,7 +16,7 @@ const run = async () => {
   });
 
   if (!admin) {
-    throw new Error("Super Admin user was not found");
+    throw new Error("Super Admin image update could not be completed");
   }
 
   if (!admin.profileImage) {

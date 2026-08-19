@@ -66,6 +66,7 @@ exports.getBillingStats = async (req, res, next) => {
       BillingItem.find(invoiceDateFilter).lean(),
       BillingItem.find(visibleFilter).lean(),
     ]);
+    const pendingInvoices = allVisibleItems.filter((item) => item.status === "PAYMENT_PENDING");
 
     const paymentsInRange = allVisibleItems.flatMap((item) =>
       (item.payments || [])
@@ -77,7 +78,7 @@ exports.getBillingStats = async (req, res, next) => {
     );
 
     const invoiceAmount = raisedInvoices.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-    const pendingAmount = raisedInvoices.reduce((sum, item) => {
+    const pendingAmount = pendingInvoices.reduce((sum, item) => {
       const paid = Number(item.paidAmount || totalPaid(item));
       return sum + Math.max(Number(item.amount || 0) - paid, 0);
     }, 0);
@@ -92,7 +93,7 @@ exports.getBillingStats = async (req, res, next) => {
         invoiceAmount,
         paidAmount,
         pendingAmount,
-        paymentPendingInvoices: raisedInvoices.filter((item) => item.status === "PAYMENT_PENDING").length,
+        paymentPendingInvoices: pendingInvoices.length,
         paidInvoices: raisedInvoices.filter((item) => item.status === "PAID").length,
         invoiceToBeRaised: allVisibleItems.filter((item) => item.status === "INVOICE_TO_BE_RAISED").length,
       },

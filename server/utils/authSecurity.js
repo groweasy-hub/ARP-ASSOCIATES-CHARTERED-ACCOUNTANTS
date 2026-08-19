@@ -8,6 +8,7 @@ const REGISTRATION_FAILURE_MESSAGE = "Registration request could not be complete
 const AUTH_VALIDATION_FAILURE_MESSAGE = "Invalid request";
 const PASSWORD_UPDATE_FAILURE_MESSAGE = "Password update could not be completed";
 const PROFILE_UPDATE_FAILURE_MESSAGE = "Profile update could not be completed";
+const USER_LOOKUP_FAILURE_MESSAGE = "User request could not be completed";
 
 const LOGIN_WINDOW_MS = 60 * 1000;
 const LOGIN_RATE_LIMIT = 10;
@@ -91,6 +92,13 @@ const signupSchema = z.object({
   profileImage: z.string().optional(),
 });
 
+const userUpdateSchema = signupSchema
+  .omit({ password: true })
+  .partial()
+  .extend({
+    profileImage: z.string().optional(),
+  });
+
 const passwordChangeSchema = z.object({
   currentPassword: passwordSchema,
   newPassword: passwordSchema,
@@ -147,6 +155,8 @@ const logValidationFailure = (context, error, req) => {
     })),
   });
 };
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const validateAuthBody = (schema, body, context, req) => {
   const result = schema.safeParse(body || {});
@@ -259,6 +269,7 @@ module.exports = {
   REGISTRATION_FAILURE_MESSAGE,
   adminResetPasswordSchema,
   clearLoginFailures,
+  constantTimeEqual,
   forgotPasswordSchema,
   getLoginState,
   loginRateLimiter,
@@ -268,6 +279,9 @@ module.exports = {
   profileUpdateSchema,
   registerLoginFailure,
   signupSchema,
+  userUpdateSchema,
+  wait,
   validateAuthBody,
   verifyAndMigratePassword,
+  USER_LOOKUP_FAILURE_MESSAGE,
 };

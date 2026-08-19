@@ -11,16 +11,24 @@ const headers = (extra = {}) => ({
 
 const api = {
   post: (path, body) =>
-    fetch(`${BASE}${path}`, { method: "POST", headers: headers(), body: JSON.stringify(body) }).then((r) => r.json()),
+    fetch(`${BASE}${path}`, { method: "POST", headers: headers(), body: JSON.stringify(body) })
+      .then((r) => r.json())
+      .catch(() => ({ success: false, message: "Unable to reach the server. Please try again shortly." })),
 
   get: (path) =>
-    fetch(`${BASE}${path}`, { headers: headers() }).then((r) => r.json()),
+    fetch(`${BASE}${path}`, { headers: headers() })
+      .then((r) => r.json())
+      .catch(() => ({ success: false, message: "Unable to reach the server. Please try again shortly." })),
 
   patch: (path, body) =>
-    fetch(`${BASE}${path}`, { method: "PATCH", headers: headers(), body: JSON.stringify(body) }).then((r) => r.json()),
+    fetch(`${BASE}${path}`, { method: "PATCH", headers: headers(), body: JSON.stringify(body) })
+      .then((r) => r.json())
+      .catch(() => ({ success: false, message: "Unable to reach the server. Please try again shortly." })),
 
   delete: (path) =>
-    fetch(`${BASE}${path}`, { method: "DELETE", headers: headers() }).then((r) => r.json()),
+    fetch(`${BASE}${path}`, { method: "DELETE", headers: headers() })
+      .then((r) => r.json())
+      .catch(() => ({ success: false, message: "Unable to reach the server. Please try again shortly." })),
 
   downloadCSV: (path) =>
     fetch(`${BASE}${path}`, { headers: headers() }).then(async (r) => {
