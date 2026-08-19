@@ -24,3 +24,19 @@ exports.markRead = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.clearAllNotifications = async (req, res, next) => {
+  try {
+    const result = await Notification.deleteMany({
+      isRead: false,
+      $or: [{ user: req.admin._id }, { user: null }],
+    });
+    res.json({
+      success: true,
+      message: "Notifications cleared",
+      deletedCount: result.deletedCount || 0,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
